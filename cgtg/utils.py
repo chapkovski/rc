@@ -51,10 +51,10 @@ def pldata(i, o):
 
         t = {'region': regionname, 'player_id': i, 'pref':pref}
 
-        for i,p in enumerate(params, start=1):
+        for j,p in enumerate(params, start=1):
             t1 = t.copy()
             t1['info'] = p
-            t1['info_position'] = i
+            t1['info_position'] = j
             t1['value'] = info[regionname][p]
             res.append(t1)
     return res
@@ -76,7 +76,7 @@ for i in range(n):
     res.extend(pldata(i, singleset))
 df2 = pd.DataFrame(res)
 df2['treatment'] = 'FIN'
-
+# df.sort_values(by=['treatment','player_id','region'],inplace=True)
 df = pd.concat([df1, df2])
 df = df[['player_id', 'region',  'info', 'info_position', 'value','pref',  'treatment']]
 print( list(df.columns.values))

@@ -45,8 +45,17 @@ class GeneralInstructions(Page):
     pass
 
 
-class DecisionInstructions(Page):
+class CGBeliefsInstructions(Page):
     pass
+
+
+class CGComprehensionCheck(Page):
+    instructions = True
+    form_model = 'player'
+    form_fields = ['cq1_CG',
+                   'cq2_CG',
+                   'cq3_CG',
+                   ]
 
 
 class DGComprehensionCheck(Page):
@@ -254,7 +263,8 @@ page_sequence = [
     Opinion2,
     Opinion3,
     GeneralInstructions,
-    DecisionInstructions,
+    CGBeliefsInstructions,
+    CGComprehensionCheck,
     DGComprehensionCheck,
     Blocked,
     InfoStage1,

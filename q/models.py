@@ -132,17 +132,29 @@ class Player(BasePlayer):
     keyword_rev_2 = models.StringField()
     keyword_rev_3 = models.StringField()
     # Comprehension questions
-    cq1_ego = models.IntegerField(label=Constants.CQ_EGO_LABEL, choices=CQ_CHOICES,
+    cq1_CG = models.IntegerField(
+        label='Реальное значение людей, назвавших Орла, составило 53 из 100. Если вы назвали 87, сколько вы получите в качестве бонуса?',
+        choices=CQ1_CHOICES,
+        widget=widgets.RadioSelectHorizontal)
+    cq2_CG = models.IntegerField(
+        label='Реальное значение людей, назвавших Орла, составило 53 из 100. Если вы назвали 42, сколько вы получите в качестве бонуса?',
+        choices=CQ1_CHOICES,
+        widget=widgets.RadioSelectHorizontal)
+    cq3_CG = models.IntegerField(
+        label='Реальное значение людей, назвавших Орла, составило 53 из 100. Если вы назвали 43, сколько вы получите в качестве бонуса?',
+        choices=CQ1_CHOICES,
+        widget=widgets.RadioSelectHorizontal)
+    cq1_ego = models.IntegerField(label=Constants.CQ_EGO_LABEL, choices=CQ2_CHOICES,
                                   widget=widgets.RadioSelectHorizontal)
-    cq1_alter = models.IntegerField(label=Constants.CQ_ALTER_LABEL, choices=CQ_CHOICES,
+    cq1_alter = models.IntegerField(label=Constants.CQ_ALTER_LABEL, choices=CQ2_CHOICES,
                                     widget=widgets.RadioSelectHorizontal)
-    cq2_ego = models.IntegerField(label=Constants.CQ_EGO_LABEL, choices=CQ_CHOICES,
+    cq2_ego = models.IntegerField(label=Constants.CQ_EGO_LABEL, choices=CQ2_CHOICES,
                                   widget=widgets.RadioSelectHorizontal)
-    cq2_alter = models.IntegerField(label=Constants.CQ_ALTER_LABEL, choices=CQ_CHOICES,
+    cq2_alter = models.IntegerField(label=Constants.CQ_ALTER_LABEL, choices=CQ2_CHOICES,
                                     widget=widgets.RadioSelectHorizontal)
-    cq3_ego = models.IntegerField(label=Constants.CQ_EGO_LABEL, choices=CQ_CHOICES,
+    cq3_ego = models.IntegerField(label=Constants.CQ_EGO_LABEL, choices=CQ2_CHOICES,
                                   widget=widgets.RadioSelectHorizontal)
-    cq3_alter = models.IntegerField(label=Constants.CQ_ALTER_LABEL, choices=CQ_CHOICES,
+    cq3_alter = models.IntegerField(label=Constants.CQ_ALTER_LABEL, choices=CQ2_CHOICES,
                                     widget=widgets.RadioSelectHorizontal)
 
     #   other   main variables
