@@ -57,6 +57,7 @@ INCOME_CHOICES = [
 RISK_CHOICES = range(0, 11)
 
 
+
 agreement_choices_5DNK = [
     [1, 'Совершенно не согласен'],
     [2, 'Скорее не согласен'],
