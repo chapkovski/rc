@@ -205,7 +205,22 @@ class SocialCuriosityScale(Page):
         return super().post()
 
 
-class RiskAttitudes(Page):
+class Risk(Page):
+    template_name = 'q/Risk.html'
+
+    def post(self):
+        survey_data = json.loads(self._form_data.get('surveyholder'))
+        risk_attitudes = survey_data.get('risk_attitudes')
+
+        for k, v in risk_attitudes.items():
+            setattr(self.player, k, v.get('risk_attitudes'))
+        print(self.player.participant.code)
+        return super().post()
+
+
+class Big5(Page):
+    template_name = 'q/Big5.html'
+
     def post(self):
         survey_data = json.loads(self._form_data.get('surveyholder'))
         risk_attitudes = survey_data.get('risk_attitudes')
@@ -279,7 +294,8 @@ page_sequence = [
     InformationAvoidanceScale,
     SocialCuriosityScale,
     SocialDistanceIndex,
-    RiskAttitudes,
+    Risk,
+    Big5,
     Demographics,
     Demand,
     FinalForToloka,

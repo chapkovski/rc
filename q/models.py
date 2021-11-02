@@ -131,6 +131,7 @@ class Player(BasePlayer):
     keyword_rev_1 = models.StringField()
     keyword_rev_2 = models.StringField()
     keyword_rev_3 = models.StringField()
+
     # Comprehension questions
     cq1_CG = models.IntegerField(
         label='Реальное значение людей, назвавших Орла, составило 53 из 100. Если вы назвали 87, сколько вы получите в качестве бонуса?',
@@ -192,6 +193,7 @@ class Player(BasePlayer):
         choices=INCOME_CHOICES,
         widget=widgets.RadioSelect()
     )
+
     # Demand and clarity
     demand = models.LongStringField()
     instructions_clarity = models.IntegerField(label="""
@@ -233,3 +235,83 @@ def cq3_ego_error_message(player, value):
 def cq3_alter_error_message(player, value):
     if value != 0:
         return Constants.ERR_MSG
+
+
+# Risk
+risk_general = models.PositiveIntegerField(
+    label='',
+    choices=Constants.RISK_CHOICES,
+    widget=LikertWidget(
+        quote=_(
+            "Please, indicate your general attitude to risk"),
+        label=_(
+            """. Please indicate your answer on a scale from 0 to 10. A 0 means “completely unwilling to take risk,” and a 10 means “very willing to take risk.”
+            """),
+        left=_('I am completely unwilling to take risk'),
+        right=_('I am very willing to take risk'),
+    )
+)
+
+risk_fin = models.PositiveIntegerField(
+    label=_("""In financial matters'"""),
+    choices=Constants.RISK_CHOICES,
+    widget=widgets.RadioSelectHorizontal()
+)
+
+risk_sport = models.PositiveIntegerField(
+    label=_("""In leisure and sport"""),
+    choices=Constants.RISK_CHOICES,
+    widget=widgets.RadioSelectHorizontal()
+)
+
+risk_prof = models.PositiveIntegerField(
+    label=_("""In professional career"""),
+    choices=Constants.RISK_CHOICES,
+    widget=widgets.RadioSelectHorizontal()
+)
+
+risk_health = models.PositiveIntegerField(
+    label=_("""In health"""),
+    choices=Constants.RISK_CHOICES,
+    widget=widgets.RadioSelectHorizontal()
+)
+
+risk_strangers = models.PositiveIntegerField(
+    label=_("""With strangers"""),
+    choices=Constants.RISK_CHOICES,
+    widget=widgets.RadioSelectHorizontal()
+)
+risk_drive = models.PositiveIntegerField(
+    label=_("""While driving"""),
+    choices=Constants.RISK_CHOICES,
+    widget=widgets.RadioSelectHorizontal()
+)
+
+ready_help = models.IntegerField(
+    label=_('Willingness to spend money even at not return'),
+    choices=Constants.ready_help_choices,
+    widget=widgets.RadioSelect)
+
+#Big 5
+big5_1 = models.IntegerField(label=_('I see myself as someone who is reserved'),
+                                 choices=Constants.agreement_choices_5DNK, widget=widgets.RadioSelect)
+    big5_2 = models.IntegerField(label=_('I see myself as someone who is generally trusting'),
+                                 choices=Constants.agreement_choices_5DNK, widget=widgets.RadioSelect)
+    big5_3 = models.IntegerField(label=_('I see myself as someone who tends to be lazy'),
+                                 choices=Constants.agreement_choices_5DNK, widget=widgets.RadioSelect)
+    big5_4 = models.IntegerField(label=_('I see myself as someone who is relaxed, handles stress well'),
+                                 choices=Constants.agreement_choices_5DNK, widget=widgets.RadioSelect)
+    big5_5 = models.IntegerField(label=_('I see myself as someone who has few artistic interests'),
+                                 choices=Constants.agreement_choices_5DNK, widget=widgets.RadioSelect)
+    big5_6 = models.IntegerField(label=_('I see myself as someone who is outgoing, sociable'),
+                                 choices=Constants.agreement_choices_5DNK, widget=widgets.RadioSelect)
+    big5_7 = models.IntegerField(label=_('I see myself as someone who tends to find fault with others'),
+                                 choices=Constants.agreement_choices_5DNK, widget=widgets.RadioSelect)
+    big5_8 = models.IntegerField(label=_('I see myself as someone who does a thorough job'),
+                                 choices=Constants.agreement_choices_5DNK, widget=widgets.RadioSelect)
+    big5_9 = models.IntegerField(label=_('I see myself as someone who gets nervous easily'),
+                                 choices=Constants.agreement_choices_5DNK, widget=widgets.RadioSelect)
+    big5_10 = models.IntegerField(label=_('I see myself as someone who has an active imagination'),
+                                  choices=Constants.agreement_choices_5DNK, widget=widgets.RadioSelect)
+    big5_11 = models.IntegerField(label=_('I see myself as someone who is reserved'),
+                                  choices=Constants.agreement_choices_5DNK, widget=widgets.RadioSelect)
