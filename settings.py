@@ -1,12 +1,31 @@
 from os import environ
 
 SESSION_CONFIGS = [
-    # dict(
-    #    name='public_goods',
-    #    display_name="Public Goods",
-    #    num_demo_participants=3,
-    #    app_sequence=['public_goods', 'payment_info']
-    # ),
+    dict(
+        name='corruption',
+        app_sequence=[
+            'cgtg',
+            'q'
+        ],
+        num_demo_participants=3,
+    ),
+    dict(
+        name='neutral',
+        app_sequence=[
+            'cgtg',
+            # 'q'
+        ],
+        num_demo_participants=3,
+    ),
+    dict(
+        name='endo',
+        endo=True,
+        app_sequence=[
+            'cgtg',
+            # 'q'
+        ],
+        num_demo_participants=3,
+    ),
 ]
 
 # if you set a property in SESSION_CONFIG_DEFAULTS, it will be inherited by all configs

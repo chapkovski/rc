@@ -1,5 +1,5 @@
 from otree.api import Currency as c, currency_range
-from ._builtin import Page, WaitPage
+from ._builtin import Page as oTreePage, WaitPage
 from .models import Constants
 
 class Page(oTreePage):
@@ -24,8 +24,8 @@ class AppPage(Page):
 class FirstPage(Page):
     app = None
 
-    def is_displayed(player: Player):
-        return player.round_number == 1
+    def is_displayed(self):
+        return self.round_number == 1
 
 
 
@@ -40,8 +40,8 @@ class GeneralInstructions(FirstPage):
 
 
 class RegionalInfoChoose(FirstPage):
-    def is_displayed(player: Player):
-        return player.session.config.get('endo', False)
+    def is_displayed(self):
+        return self.session.config.get('endo', False)
 
 
 class RegionalInfoFixed(FirstPage):
@@ -73,8 +73,8 @@ class CGBeliefDecision(AppPage):
 
 
 class Part2Announcement(Page):
-    def is_displayed(player: Player):
-        return player.round_number == 2
+    def is_displayed(self):
+        return self.round_number == 2
 
 
 class TGInstructions(AppPage):

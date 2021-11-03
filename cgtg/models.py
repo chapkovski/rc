@@ -8,8 +8,9 @@ from otree.api import (
     Currency as c,
     currency_range,
 )
-
-
+from itertools import cycle
+import itertools
+import yaml
 author = ' Authors: Chapkovski, Mozolyuk. HSE-Moscow.'
 
 doc = """
@@ -20,8 +21,10 @@ Cheating game and trust game together for the interregional project.
 class Constants(BaseConstants):
     name_in_url = 'cgtg'
     players_per_group = None
-    num_rounds = 1
-
+    num_rounds = 2
+    apps = ['cg', 'tg']
+    with open(r'./data/regions.yaml') as file:
+        regions = yaml.load(file, Loader=yaml.FullLoader)
 
 class Subsession(BaseSubsession):
     treatment = models.StringField()
