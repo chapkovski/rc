@@ -1,10 +1,6 @@
-from otree.api import Page as oTreePage
-from .choices import *
-from .models import *
-from .constants import Constants
-from pprint import pprint
-from starlette.responses import RedirectResponse
-
+from otree.api import Currency as c, currency_range
+from ._builtin import Page, WaitPage
+from .models import Constants
 
 class Page(oTreePage):
     instructions = False
