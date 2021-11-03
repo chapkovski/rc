@@ -2,7 +2,8 @@ from os import environ
 
 SESSION_CONFIGS = [
     dict(
-        name='corruption',
+        name='fic',
+        display_name='Fixed Information + Corruption',
         app_sequence=[
             'cgtg',
             'q'
@@ -10,7 +11,8 @@ SESSION_CONFIGS = [
         num_demo_participants=3,
     ),
     dict(
-        name='neutral',
+        name='fin',
+        display_name='Fixed Information  Neutral',
         app_sequence=[
             'cgtg',
             # 'q'
@@ -18,7 +20,8 @@ SESSION_CONFIGS = [
         num_demo_participants=3,
     ),
     dict(
-        name='endo',
+        name='ei',
+        display_name='Endogenous Information',
         endo=True,
         app_sequence=[
             'cgtg',
@@ -39,11 +42,11 @@ SESSION_CONFIG_DEFAULTS = dict(
 
 # ISO-639 code
 # for example: de, fr, ja, ko, zh-hans
-LANGUAGE_CODE = 'en'
+LANGUAGE_CODE = 'ru'
 
 # e.g. EUR, GBP, CNY, JPY
 REAL_WORLD_CURRENCY_CODE = 'USD'
-USE_POINTS = True
+USE_POINTS = False
 
 ADMIN_USERNAME = 'admin'
 # for security, best to set admin password in an environment variable
@@ -55,3 +58,4 @@ SECRET_KEY = 'a7+eg)+9i4=rvgt+x73k)t&7u#owrrju=p*nv5=(4za(9z2+-5'
 
 # if an app is included in SESSION_CONFIGS, you don't need to list it here
 INSTALLED_APPS = ['otree']
+EXTENSION_APPS = ['cgtg']

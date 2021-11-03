@@ -1,26 +1,32 @@
 {% extends "global/Page.html" %}
 {% load otree %}
 {% block title %}
-Regional Info Shown
+    Regional Info Shown
 {% endblock %}
 {% block content %}
-<style>
-    .otree-body {
-        max-width: initial;
-    }
-</style>
+    <style>
+        .otree-body {
+            max-width: initial;
+        }
+    </style>
 
-<div class="row">
-    {% for r in Constants.regions %}
-    <div class="col-4 my-3">
-        <div class="card">
-            <div class="card-header">{{ r.name }}</div>
-            <div class="card-body"></div>
-        </div>
+
+    <div class="row">
+        {% for r in player.get_regional_data %}
+            <div class="col-4 my-3">
+                <div class="card">
+                    <div class="card-header">{{ r.name }}</div>
+                    <div class="card-body">
+                        {% for foo in r.info %}
+                            <div>{{ foo.info_label }}: {{ foo.value }}</div>
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
     </div>
-    {% endfor %}
-
-</div>
-{% next_button %}
+    {% next_button %}
 
 {% endblock %}

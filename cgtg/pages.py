@@ -2,6 +2,7 @@ from otree.api import Currency as c, currency_range
 from ._builtin import Page as oTreePage, WaitPage
 from .models import Constants
 
+
 class Page(oTreePage):
     instructions = False
 
@@ -28,9 +29,6 @@ class FirstPage(Page):
         return self.round_number == 1
 
 
-
-
-
 class Consent(FirstPage):
     pass
 
@@ -46,6 +44,8 @@ class RegionalInfoChoose(FirstPage):
 
 class RegionalInfoFixed(FirstPage):
     pass
+
+
 
 
 class CGInstructions(AppPage):
@@ -70,7 +70,12 @@ class CGBeliefsquiz(AppPage):
 
 class CGBeliefDecision(AppPage):
     app = 'cg'
+    form_model = 'player'
+    form_fields = ['r1_cg_estimate', 'r2_cg_estimate', 'r3_cg_estimate']
 
+    def vars_for_template(self):
+        form = self.get_form()
+        return dict(data_to_show=zip(self.player.get_regional_data(), form))
 
 class Part2Announcement(Page):
     def is_displayed(self):
@@ -91,22 +96,37 @@ class TGRoleAnnouncement(AppPage):
 
 class TGDecision(AppPage):
     app = 'tg'
+    form_model = 'player'
+    form_fields = ['r1_trust', 'r2_trust', 'r3_trust']
+
+    def vars_for_template(self):
+        form = self.get_form()
+        return dict(data_to_show=zip(self.player.get_regional_data(), form))
+class TGBeliefs(AppPage):
+    app = 'tg'
+    form_model = 'player'
+    form_fields = ['r1_trust_belief', 'r2_trust_belief', 'r3_trust_belief']
+
+    def vars_for_template(self):
+        form = self.get_form()
+        return dict(data_to_show=zip(self.player.get_regional_data(), form))
 
 
 page_sequence = [
     # Consent,
     # GeneralInstructions,
     # RegionalInfoChoose,
-    RegionalInfoFixed,
+    # RegionalInfoFixed,
     # CGInstructions,
-    # CGquiz,
+
     # CGdecision,
     # CGBeliefsInstructions,
     # CGBeliefsquiz,
-    # CGBeliefDecision,
+    CGBeliefDecision,
     # Part2Announcement,
     # TGInstructions,
     # TGQuiz,
     # TGRoleAnnouncement,
-    # TGDecision,
+    TGDecision,
+    TGBeliefs,
 ]

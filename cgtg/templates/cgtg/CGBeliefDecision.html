@@ -1,21 +1,64 @@
 {% extends "global/Page.html" %}
-{{ block title }}
-Cheating Game beliefs - Decision
-{{ endblock }}
-{{ block content }}
+{% load otree %}
+{% block title %}
+    CG Beliefs - Decision
+{% endblock %}
+{% block content %}
+    <style>
+        .otree-body {
+            max-width: initial;
+        }
 
-<div class="card my-3">
-    <div class="card-body">
-        <div class="card-text">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">
+        .lg {
+            font-size: 1rem
+        }
+    </style>
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    Инструкции
+                </div>
+                <div class="card-body">
+                    <div>
+                        Угадайте сколько людей из каждого из трех регионов принимающих участие в исследовании назовут
+                        Орел
+                    </div>
+                    <div>
+                        Если вы угадаете (плюс минус 10) то получите бонус {{ Constants.bonus_for_cg_belief }}.
+                    </div>
 
-                </li>
-            </ul>
-
+                </div>
+            </div>
         </div>
     </div>
-</div>
-{{ next_button }}
 
-{{ endblock }}
+    <div class="row">
+        {% for r,f in data_to_show %}
+            <div class="col-4 my-3">
+                <div class="card">
+                    <div class="card-header">
+                        {{ r.name }}
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group mb-3   list-group-flush">
+                            {% for foo in r.info %}
+                                 <li class="list-group-item d-flex justify-content-between align-items-center">
+                                     {{ foo.info_label }}:
+                                  <span class="badge bg-primary text-white rounded-pill lg">{{ foo.value }}</span>
+                                 </li>
+                            {% endfor %}
+
+
+                        </ul>
+                        {{ f }}
+                    </div>
+                </div>
+            </div>
+
+
+        {% endfor %}
+    </div>
+    {% next_button %}
+
+{% endblock %}

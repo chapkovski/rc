@@ -1,12 +1,12 @@
 {% extends "global/Page.html" %}
 {% load otree %}
 {% block title %}
-    TG Decision
+    TG Beliefs
 {% endblock %}
 {% block content %}
     <style>
         .otree-body {
-            max-width: initial;
+            max-width: 1200px;
         }
     </style>
     <div class="row">
@@ -16,17 +16,9 @@
                     Инструкции
                 </div>
                 <div class="card-body">
-                    <div>
-                        Участник Б, с которым вы в паре может быть из одного из трех регионов.
-                    Для каждого из возможных случаев, примите решение, хотели ли бы вы послать 0$ или {{ Constants.tg_endowment }}$
-                    участнику Б, если он окажется из соответствующего региона.
-                    </div>
-                    <div>
-                        Если вы пошлете ему     {{ Constants.tg_endowment }}$, эта сумма будет умножена на {{ Constants.tg_coef }}.
-
-                        Участник Б получит {{ Constants.tg_full }}$, и  может вернуть вам назад любую сумму от 0$ до   {{ Constants.tg_full }}$
-                    </div>
-
+                    Для каждого из трех регионов, которые принимают участие в исследовании, попробуйте угадать
+                    какую сумму чаще всего будут возвращать участники Б участнику А с которыми они в паре, если участник
+                    А им пошлет {{ Constants.tg_endowment }}$?
                 </div>
             </div>
         </div>
