@@ -88,6 +88,8 @@ class Subsession(BaseSubsession):
                     params = fic_params
                 else:
                     params = fin_params
+                if self.treatment == 'return':
+                    params = random.choice([fic_params, fin_params])
                 p.vars['params'] = shuffler(params)
                 p.vars['appseq'] = next(apps)
         infos = []
@@ -124,9 +126,12 @@ class Player(BasePlayer):
     r1_cg_estimate = models.IntegerField(min=0, max=100)
     r2_cg_estimate = models.IntegerField(min=0, max=100)
     r3_cg_estimate = models.IntegerField(min=0, max=100)
-    r1_trust = models.BooleanField(choices=Constants.TRUST_CHOICES)
-    r2_trust = models.BooleanField(choices=Constants.TRUST_CHOICES)
-    r3_trust = models.BooleanField(choices=Constants.TRUST_CHOICES)
+    r1_trust = models.IntegerField(min=0, max=Constants.tg_endowment)
+    r2_trust = models.IntegerField(min=0, max=Constants.tg_endowment)
+    r3_trust = models.IntegerField(min=0, max=Constants.tg_endowment)
+    r1_trust_return = models.IntegerField(min=0, max=Constants.tg_full)
+    r2_trust_return = models.IntegerField(min=0, max=Constants.tg_full)
+    r3_trust_return = models.IntegerField(min=0, max=Constants.tg_full)
     # TODO: think about slider for beliefs
     r1_trust_belief = models.FloatField(min=0, max=Constants.tg_full, )
     r2_trust_belief = models.FloatField(min=0, max=Constants.tg_full, )

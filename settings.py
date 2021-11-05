@@ -29,6 +29,16 @@ SESSION_CONFIGS = [
         ],
         num_demo_participants=3,
     ),
+    dict(
+        name='return',
+        display_name='For returning decisions',
+        app_sequence=[
+            'cgtg',
+            'q'
+        ],
+        num_demo_participants=3,
+    ),
+
 ]
 
 # if you set a property in SESSION_CONFIG_DEFAULTS, it will be inherited by all configs

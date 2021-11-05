@@ -46,8 +46,6 @@ class RegionalInfoFixed(FirstPage):
     pass
 
 
-
-
 class CGInstructions(AppPage):
     app = 'cg'
 
@@ -77,6 +75,7 @@ class CGBeliefDecision(AppPage):
         form = self.get_form()
         return dict(data_to_show=zip(self.player.get_regional_data(), form))
 
+
 class Part2Announcement(Page):
     def is_displayed(self):
         return self.round_number == 2
@@ -94,14 +93,33 @@ class TGRoleAnnouncement(AppPage):
     app = 'tg'
 
 
+class TGReturnDecision(AppPage):
+    app = 'tg'
+
+    def is_displayed(self):
+        return self.subsession.treatment == 'return'
+
+    form_model = 'player'
+    form_fields = ['r1_trust_return', 'r2_trust_return', 'r3_trust_return']
+
+    def vars_for_template(self):
+        form = self.get_form()
+        return dict(data_to_show=zip(self.player.get_regional_data(), form))
+
+
 class TGDecision(AppPage):
     app = 'tg'
     form_model = 'player'
     form_fields = ['r1_trust', 'r2_trust', 'r3_trust']
 
+    def is_displayed(self):
+        return not self.subsession.treatment == 'return'
+
     def vars_for_template(self):
         form = self.get_form()
         return dict(data_to_show=zip(self.player.get_regional_data(), form))
+
+
 class TGBeliefs(AppPage):
     app = 'tg'
     form_model = 'player'
@@ -122,11 +140,12 @@ page_sequence = [
     # CGdecision,
     # CGBeliefsInstructions,
     # CGBeliefsquiz,
-    CGBeliefDecision,
+    # CGBeliefDecision,
     # Part2Announcement,
     # TGInstructions,
     # TGQuiz,
     # TGRoleAnnouncement,
-    TGDecision,
-    TGBeliefs,
+    # TGDecision,
+    # TGBeliefs,
+    TGReturnDecision
 ]
