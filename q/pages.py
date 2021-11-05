@@ -70,7 +70,7 @@ class FinalForToloka(Page):
 
 page_sequence = [
     # Risk,
-    # Big5,
+    Big5,
     RegionKnowledge,
     # Demographics,
     # Demand,
