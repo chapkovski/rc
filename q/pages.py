@@ -25,6 +25,13 @@ class Risk(Page):
         return super().post()
 
 
+class RegionKnowledge(Page):
+    def post(self):
+        data = json.loads(self.request.POST.get('surveyholder')).get('big5')
+        if data:
+            for k, v in data.items():
+                setattr(self.player, k, v.get('col1'))
+        return super().post()
 class Big5(Page):
     def post(self):
         data = json.loads(self.request.POST.get('surveyholder')).get('big5')
@@ -62,10 +69,11 @@ class FinalForToloka(Page):
 
 
 page_sequence = [
-    Risk,
-    Big5,
-    Demographics,
-    Demand,
-    FinalForToloka,
+    # Risk,
+    # Big5,
+    RegionKnowledge,
+    # Demographics,
+    # Demand,
+    # FinalForToloka,
 
 ]

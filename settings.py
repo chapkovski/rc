@@ -33,7 +33,7 @@ SESSION_CONFIGS = [
         name='return',
         display_name='For returning decisions',
         app_sequence=[
-            'cgtg',
+            # 'cgtg',
             'q'
         ],
         num_demo_participants=3,
