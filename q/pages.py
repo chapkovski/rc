@@ -26,11 +26,16 @@ class Risk(Page):
 
 
 class RegionKnowledge(Page):
+
     def post(self):
-        data = json.loads(self.request.POST.get('surveyholder')).get('big5')
+        data = json.loads(self.request.POST.get('surveyholder')).get('region_knowledge')
+
         if data:
             for k, v in data.items():
-                setattr(self.player, k, v.get('col1'))
+                fs = v.get('col1')
+                for f in fs:
+                    full_field = f'knowledge_{k}_{f}'
+                    setattr(self.player, full_field, True)
         return super().post()
 class Big5(Page):
     def post(self):
@@ -70,7 +75,7 @@ class FinalForToloka(Page):
 
 page_sequence = [
     # Risk,
-    Big5,
+    # Big5,
     RegionKnowledge,
     # Demographics,
     # Demand,

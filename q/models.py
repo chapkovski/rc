@@ -33,4 +33,27 @@ class Group(BaseGroup):
 
 
 class Player(BasePlayer):
-    pass
+    # knowledge block
+    knowledge_arkhangelsk_live_in = models.BooleanField()
+    knowledge_arkhangelsk_family = models.BooleanField()
+    knowledge_arkhangelsk_press = models.BooleanField()
+    knowledge_arkhangelsk_network = models.BooleanField()
+    knowledge_arkhangelsk_other = models.BooleanField()
+    knowledge_arkhangelsk_none = models.BooleanField()
+    knowledge_moscow_live_in = models.BooleanField()
+    knowledge_moscow_family = models.BooleanField()
+    knowledge_moscow_press = models.BooleanField()
+    knowledge_moscow_network = models.BooleanField()
+    knowledge_moscow_other = models.BooleanField()
+    knowledge_moscow_none = models.BooleanField()
+    knowledge_voronezh_live_in = models.BooleanField()
+    knowledge_voronezh_family = models.BooleanField()
+    knowledge_voronezh_press = models.BooleanField()
+    knowledge_voronezh_network = models.BooleanField()
+    knowledge_voronezh_other = models.BooleanField()
+    knowledge_voronezh_none = models.BooleanField()
+
+
+
+
+    # end of knowledge block
