@@ -14,6 +14,10 @@ class Page(oTreePage):
         r['instructions'] = self.instructions
         return r
 
+class Demand(Page):
+    form_model = 'player'
+    form_fields = ["demand", 'instructions_clarity']
+
 
 
 class Risk(Page):
@@ -37,19 +41,27 @@ class RegionKnowledge(Page):
                     full_field = f'knowledge_{k}_{f}'
                     setattr(self.player, full_field, True)
         return super().post()
-class Big5(Page):
-    def post(self):
-        data = json.loads(self.request.POST.get('surveyholder')).get('big5')
-        if data:
-            for k, v in data.items():
-                setattr(self.player, k, v.get('col1'))
-        return super().post()
+
+class WVSCorr(Page):
+   pass
+
+
+class WVSJustifiability(Page):
+    pass
+
+
+class TrustNRisk(Page):
+    form_model = 'player'
+    form_fields = ["general_trust",
+                   "general_risk"
+                   "religion",
+                   "political",
+                     ]
 
 
 class Demographics(Page):
     form_model = 'player'
-    form_fields = ["religion",
-                   "political",
+    form_fields = [
                    "age",
                    "education",
                    "gender",
@@ -57,10 +69,6 @@ class Demographics(Page):
                    "employment",
                    "income", ]
 
-
-class Demand(Page):
-    form_model = 'player'
-    form_fields = ["demand", 'instructions_clarity']
 
 
 
@@ -74,11 +82,11 @@ class FinalForToloka(Page):
 
 
 page_sequence = [
-    # Risk,
-    # Big5,
-    RegionKnowledge,
-    # Demographics,
     # Demand,
+    # RegionKnowledge,
+    WVSCorr,
+    # WVSJustifiability,
+    # TrustNRisk,
+    # Demographics,
     # FinalForToloka,
-
 ]
