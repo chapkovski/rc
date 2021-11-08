@@ -71,6 +71,10 @@ class Constants(BaseConstants):
     bonus_for_cg_belief = c(1)
     TRUST_CHOICES = [(0, '0$'), (tg_endowment, f'{tg_endowment}$')]
     TG_BELIEF_CHOICES = [(i / 10, f'{i / 10}$') for i in range(0, tg_full * 10, 1)]
+    MAX_CQ_ATTEMPTS = 4
+    formatter = lambda  x: 'раз' if x in [0] or x> 5 else 'раза'
+    MAX_CQ_ATTEMPTS_formatted = f'{MAX_CQ_ATTEMPTS} {formatter(MAX_CQ_ATTEMPTS)}'
+    expected_time = '20  минут'
     with open(r'./data/regions.yaml') as file:
         regions = yaml.load(file, Loader=yaml.FullLoader)
 
@@ -107,6 +111,11 @@ class Group(BaseGroup):
 
 
 class Player(BasePlayer):
+    def role(self):
+        if   self.subsession.treatment == 'return':
+            return 'Б'
+        else:
+            return 'A'
     def get_regions(self):
         return [self.r1_name, self.r2_name, self.r3_name]
 
@@ -136,7 +145,9 @@ class Player(BasePlayer):
     r1_trust_belief = models.FloatField(min=0, max=Constants.tg_full, )
     r2_trust_belief = models.FloatField(min=0, max=Constants.tg_full, )
     r3_trust_belief = models.FloatField(min=0, max=Constants.tg_full, )
-
+    confirm_time = models.BooleanField(widget=widgets.CheckboxInput, label='Я понимаю, что расчет бонусов может занять вплоть до нескольких рабочих дней')
+    confirm_block= models.BooleanField(widget=widgets.CheckboxInput,
+                                       label=f'Я понимаю, что если я не смогу ответить на проверочные вопросы более чем {Constants.MAX_CQ_ATTEMPTS_formatted}, то не смогу принять дальнейшее участие в исследовании.')
 
 class Info(djmodels.Model):
     owner = djmodels.ForeignKey(to=Player, on_delete=djmodels.CASCADE, related_name="infos")

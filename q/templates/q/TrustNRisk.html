@@ -8,8 +8,20 @@
 
 {% block content %}
     <style>
+        .sv_row div div div  {
+            width: 100%!important;
+        }
+
+        fieldset {
+            display: flex !important;
+        }
+
         label.btn.btn-default.btn-secondary.active {
             background: yellow;
+            color: black;
+        }
+
+        .sv_q_rating_min_text span.sv-string-viewer, .sv_q_rating_max_text span.sv-string-viewer {
             color: black;
         }
 
@@ -24,49 +36,57 @@
         Survey
             .StylesManager
             .applyTheme("bootstrap");
-
+        const reqtext = 'Пожалуйста, ответьте на этот вопрос'
         var json = {
             requiredText: '',
+
             showQuestionNumbers: "off",
             showCompletedPage: false,
-            completeText: "Next",
+            completeText: "Далее",
             questions: [
                 {
-                    type: "matrixdropdown",
-                    name: "big5",
-                    title: "I see myself as someone who...",
-
-                    columns: [
-                        {
-                            name: "col1",
-                            cellType: "radiogroup",
-                            showInMultipleColumns: true,
-                            isRequired: false,
-                            choices: [
-                                {value: 1, text: "Totally disagree"},
-                                {value: 2, text: "Somewhat disagree"},
-                                {value: 3, text: "Neither agree nor disagree"},
-                                {value: 4, text: "Somewhat agree"},
-                                {value: 5, text: "Absolutely agree"},
-                                {value: 999, text: "Hard to say"}]
-                        },
-                    ],
-                    rows: [
-                        {value: 'big5_1', text: ' is reserved'},
-                        {value: 'big5_2', text: 'is generally trusting'},
-                        {value: 'big5_3', text: 'tends to be lazy'},
-                        {value: 'big5_4', text: 'is relaxed, handles stress well'},
-                        {value: 'big5_5', text: ' has few artistic interests'},
-                        {value: 'big5_6', text: ' is outgoing, sociable'},
-                        {value: 'big5_7', text: 'tends to find fault with others'},
-                        {value: 'big5_8', text: 'does a thorough job'},
-                        {value: 'big5_9', text: 'gets nervous easily'},
-                        {value: 'big5_10', text: 'has an active imagination'},
-                        {value: 'big5_11', text: 'is reserved'},
-
-
+                    isRequired: true,
+                    requiredErrorText: reqtext,
+                    "type": "radiogroup",
+                    "name": "general_trust",
+                    "title": "Если говорить в целом, Вы считаете, что большинству людей можно доверять или нужно быть очень осторожными в отношениях с людьми?",
+                    choices: [
+                        {value: 1, text: 'Большинству можно доверять'},
+                        {value: 2, text: 'Нужно быть очень осторожными в отношениях с людьми'},
                     ]
-                }
+                },
+                {
+                    isRequired: true,
+                    requiredErrorText: reqtext,
+                    "type": "rating",
+                    "name": "general_risk",
+                    "title": "Укажите, пожалуйста, насколько Вы в целом любите рисковать",
+                    "rateMax": 10,
+                    "minRateDescription": "Я совершенно не готов рисковать",
+                    "maxRateDescription": "Я охотно иду на риск"
+                },
+                {
+                    isRequired: true,
+                    requiredErrorText: reqtext,
+                    "type": "rating",
+                    "name": "religion",
+                    "title": "Насколько сильно вы верите в существование Бога? (укажите свой ответ в диапазоне от 0 = совсем нет; 10 = очень сильно)",
+                    "rateMax": 10,
+                    "minRateDescription": "Совсем нет",
+                    "maxRateDescription": "Очень сильно"
+                },
+                {
+                    isRequired: true,
+                    requiredErrorText: reqtext,
+                    "type": "rating",
+                    "name": "political",
+                    "title": " Ниже представлена 10-балльная шкала, на которой политические взгляды, которых могут придерживаться люди, расположены от крайне либеральных (слева) до крайне консервативных (справа). Куда бы вы поставили себя на этой шкале?",
+                    "rateMax": 10,
+                    "minRateDescription": "Крайне либеральные",
+                    "maxRateDescription": "Крайне консервативные"
+                },
+
+
             ]
         };
 
@@ -80,7 +100,18 @@
                 $('#form').submit()
                 ;
             });
+        survey
+    .onUpdateQuestionCssClasses
+    .add(function (survey, options) {
+        var classes = options.cssClasses
 
+        classes.root = "sq-root";
+        classes.title = "sq-title"
+        {#classes.item = "sq-item";#}
+        {#classes.label = "sq-label";#}
+
+
+    });
         $("#surveyElement").Survey({model: survey});
         ;
     </script>

@@ -19,7 +19,7 @@ class AppPage(Page):
     app = None
 
     def _is_displayed(self):
-        return self.player.app == self.app
+        return self.player.app == self.app and self.is_displayed()
 
 
 class FirstPage(Page):
@@ -33,11 +33,19 @@ class Consent(FirstPage):
     pass
 
 
+class GeneralRules(FirstPage):
+    form_model = 'player'
+    form_fields = ['confirm_time', 'confirm_block']
+
+
+
 class GeneralInstructions(FirstPage):
     pass
 
 
 class RegionalInfoChoose(FirstPage):
+    form_model = 'player'
+    form_fields = ['choose_from']
     def is_displayed(self):
         return self.session.config.get('endo', False)
 
@@ -131,21 +139,24 @@ class TGBeliefs(AppPage):
 
 
 page_sequence = [
-    # Consent,
-    # GeneralInstructions,
-    # RegionalInfoChoose,
-    # RegionalInfoFixed,
-    # CGInstructions,
+    Part2Announcement,
+    Consent,
+    GeneralRules,
 
-    # CGdecision,
-    # CGBeliefsInstructions,
-    # CGBeliefsquiz,
-    # CGBeliefDecision,
-    # Part2Announcement,
-    # TGInstructions,
-    # TGQuiz,
-    # TGRoleAnnouncement,
-    # TGDecision,
-    # TGBeliefs,
+    GeneralInstructions,
+    RegionalInfoChoose,
+    RegionalInfoFixed,
+    CGInstructions,
+
+    CGdecision,
+    CGBeliefsInstructions,
+    CGBeliefsquiz,
+    CGBeliefDecision,
+
+    TGInstructions,
+    TGQuiz,
+    TGRoleAnnouncement,
+    TGDecision,
+    TGBeliefs,
     TGReturnDecision
 ]

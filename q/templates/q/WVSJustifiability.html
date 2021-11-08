@@ -2,16 +2,13 @@
 {% load otree static %}
 
 {% block title %}
-    Big5
+    Justifiability
 {% endblock %}
 
 
 {% block content %}
     <style>
-        label.btn.btn-default.btn-secondary.active {
-            background: yellow;
-            color: black;
-        }
+
 
     </style>
     <script src="https://unpkg.com/survey-jquery@1.8.70/survey.jquery.min.js"></script>
@@ -26,48 +23,42 @@
             .applyTheme("bootstrap");
 
         var json = {
-            requiredText: '',
-            showQuestionNumbers: "off",
             showCompletedPage: false,
-            completeText: "Next",
+            completeText: "Далее",
             questions: [
                 {
-                    type: "matrixdropdown",
-                    name: "big5",
-                    title: "I see myself as someone who...",
-
-                    columns: [
+                    hideNumber: true,
+                    "type": "matrixdropdown",
+                    "name": "wvs_just",
+                    "title": "Ниже перечислены  различные действия. В какой степени каждое из этих действий, на Ваш взгляд, может быть оправдано?",
+                    {#"titleLocation": "hidden",#}
+                    "columns": [
                         {
-                            name: "col1",
-                            cellType: "radiogroup",
-                            showInMultipleColumns: true,
-                            isRequired: false,
-                            choices: [
-                                {value: 1, text: "Totally disagree"},
-                                {value: 2, text: "Somewhat disagree"},
-                                {value: 3, text: "Neither agree nor disagree"},
-                                {value: 4, text: "Somewhat agree"},
-                                {value: 5, text: "Absolutely agree"},
-                                {value: 999, text: "Hard to say"}]
+                            name: "just",
+                            title: '«10» означает, что оно может быть оправдано всегда, а «1» - никогда не может быть оправдано.',
+                            "titleLocation": "hidden",
+                            cellType: "rating",
+                            "rateMin": 0,
+                            "rateMax": 10,
+                            isRequired: true,
+                            requiredErrorText: 'Пожалуйста, ответьте на этот вопрос',
                         },
                     ],
-                    rows: [
-                        {value: 'big5_1', text: ' is reserved'},
-                        {value: 'big5_2', text: 'is generally trusting'},
-                        {value: 'big5_3', text: 'tends to be lazy'},
-                        {value: 'big5_4', text: 'is relaxed, handles stress well'},
-                        {value: 'big5_5', text: ' has few artistic interests'},
-                        {value: 'big5_6', text: ' is outgoing, sociable'},
-                        {value: 'big5_7', text: 'tends to find fault with others'},
-                        {value: 'big5_8', text: 'does a thorough job'},
-                        {value: 'big5_9', text: 'gets nervous easily'},
-                        {value: 'big5_10', text: 'has an active imagination'},
-                        {value: 'big5_11', text: 'is reserved'},
+                    "rows": [
+                        {
+                            value: "wvs_q177",
+                            text: 'Получение государственных пособий, на которые человек не имеет права'
+                        },
+                        {value: "wvs_q178", text: 'Проезд без оплаты в общественном транспорте'},
+                        {value: "wvs_q179", text: 'Кража чужой собственности'},
+                        {value: "wvs_q180", text: 'Неуплата налогов, если есть такая возможность'},
+                        {value: "wvs_q181", text: 'Получение взятки, используя служебное положение'},
 
 
                     ]
                 }
-            ]
+            ],
+
         };
 
         window.survey = new Survey.Model(json);
@@ -84,6 +75,7 @@
         $("#surveyElement").Survey({model: survey});
         ;
     </script>
+
 
 
 {% endblock %}

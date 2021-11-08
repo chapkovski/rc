@@ -1,8 +1,12 @@
 {% extends "global/Page.html" %}
-{{ block title }}
-TG Instructions
-{{ endblock }}
-{{ block content }}
+{% load otree static %}
+
+{% block title %}
+    Page title
+{% endblock %}
+
+{% block content %}
+
 
 <div class="card my-3">
     <div class="card-body">
@@ -10,12 +14,6 @@ TG Instructions
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">
 
-                </li>
-            </ul>
-
-        </div>
-    </div>
-</div>
 <p><b>Вам досталась роль Участника А.</b>
     <br>
     <br>
@@ -39,6 +37,12 @@ TG Instructions
     <b>Ваш бонус в Части 3 исследования будет складываться из 1) той суммы, которая осталась у Вас на руках после
         принятия решения, и 2) суммы, полученной Вами обратно от Участника Б. Для расчета бонуса будет выбрано решение
         по тому региону, из которого на самом деле оказался Участник Б, состоящий с Вами в паре.</b></p>
-{{ next_button }}
+                </li>
+            </ul>
 
-{{ endblock }}
+        </div>
+    </div>
+</div>
+    {% next_button %}
+{% endblock %}
+

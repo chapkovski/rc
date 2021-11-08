@@ -9,6 +9,7 @@ from otree.api import (
     currency_range,
 )
 from .choices import choices
+
 author = ' Authors: Chapkovski, Mozolyuk. HSE-Moscow.'
 
 doc = """
@@ -53,33 +54,44 @@ class Player(BasePlayer):
     # end of knowledge block
     #     WVS corruption block
     wvs_q112 = models.IntegerField()
-    # """112.
-    #     1 2 3 4 5 6 7 8 9 10
-    #     Совсем нет Коррупция
-    #     коррупции в России
-    #     повсеместна"""
-    #
-    # wvs_q118 = models.IntegerField(label="""
-    #  Как часто, по Вашему опыту, обычные люди вроде Вас или живущие с Вами по
-    #     соседству вынуждены давать взятки, дарить подарки или делать одолжения другим для того, чтобы были
-    #     решены их вопросы или оказаны услуги, на которые они и так имеют право?
-    # """,
-    #                                choices=choices.WVS_Q118)
-    #
-    # wvs_q120= models.IntegerField()
-    # """
-    # 20. Как Вы считаете, насколько велик в нашей стране риск быть привлеченным к ответственности за дачу
-    # или получение взятки, подарка или одолжения, чтобы получить государственные услуги? Дайте ответ по
-    # шкале от 1 до 10, где 1 означает "совсем никакого риска", а 10 - "риск очень велик". Вы можете выбрать любое
-    # значение шкалы в соответствии с Вашим собственным мнением.
-    # 1 2 3 4 5 6 7 8 9 10
-    # Совсем Риск
-    # никакого риска очень велик
-    # """
-    # """q177-181"""
-    # """
-    # Теперь я буду называть Вам различные действия, а Вы, используя шкалу на карточке, скажите мне, в какой
-    # степени это действие, на Ваш взгляд, может быть оправдано? «10» означает, что оно может быть оправдано
-    # всегда, а «1» - никогда не может быть оправдано. Вы также можете выбрать любую цифру между этими
-    # оценками. Итак, может ли, по Вашему мнению, быть оправдано и в какой степени? /
-    # """
+    wvs_q118 = models.IntegerField()
+    wvs_q120 = models.IntegerField()
+    # WVS justifiability block
+    wvs_q177 = models.IntegerField()
+    wvs_q178 = models.IntegerField()
+    wvs_q179 = models.IntegerField()
+    wvs_q180 = models.IntegerField()
+    wvs_q181 = models.IntegerField()
+
+    # general risk, trust, political, religion
+    general_risk = models.IntegerField(label='Укажите, пожалуйста, насколько Вы в целом любите рисковать', )
+    general_trust = models.IntegerField(label="""
+    Если говорить в целом, Вы считаете, что большинству людей можно доверять или нужно быть очень
+    осторожными в отношениях с людьми?""", choices=choices.TRUST_CHOICES)
+    religion = models.IntegerField(label="""
+          Насколько сильно вы верите в существование Бога? (укажите свой ответ в диапазоне от 1 = совсем нет 5 = очень сильно)
+          """, choices=range(1, 6), widget=widgets.RadioSelectHorizontal)
+    political = models.IntegerField(label="""
+          Ниже представлена 7-балльная шкала, на которой политические взгляды, которых могут придерживаться люди, расположены от крайне либеральных (слева) до крайне консервативных (справа). Куда бы вы поставили себя на этой шкале?
+          """, choices=range(0, 8), widget=widgets.RadioSelectHorizontal)
+    # DEMOGRAPHICS
+    age = models.StringField(label='Укажите ваш возраст:', choices=choices.AGE_CHOICES, widget=widgets.RadioSelect)
+    education = models.StringField(
+        label="Какой самый высокий уровень школы вы закончили или какую высшую степень вы получили?",
+        choices=choices.EDUCATION_CHOICES, widget=widgets.RadioSelect)
+    gender = models.StringField(label='Укажите ваш пол:',
+                                choices=choices.GENDER_CHOICES, widget=widgets.RadioSelect)
+    marital = models.StringField(label='В настоящий момент вы:',
+                                 choices=choices.MARITAL_CHOICES, widget=widgets.RadioSelect)
+    employment = models.StringField(label='В настоящий момент вы:',
+                                    choices=choices.EMPLOYMENT_CHOICES, widget=widgets.RadioSelect)
+    income = models.StringField(
+        label="Какое высказывание наиболее точно описывает финансовое положение вашей семьи?",
+        choices=choices.INCOME_CHOICES,
+        widget=widgets.RadioSelect()
+    )
+    # Demand and clarity
+    demand = models.LongStringField()
+    instructions_clarity = models.IntegerField(label="""
+       Насколько понятными и ясными были для вас инструкции? (укажите свой ответ в диапазоне от 1 = совсем непонятны 5 = абсолютно понятны)
+       """, choices=range(1, 6), widget=widgets.RadioSelectHorizontal)

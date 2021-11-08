@@ -26,7 +26,7 @@ i removed many linebreaks to make output HTML cleaner
 
         {% block index %}Page {{ page_index }} out of {{ maxpages }}.{% endblock %}
         {% block visibletitle %}{% endblock %}
-            <div class="d-none">{% block title %}{% endblock %}</div>
+            <div class="">{% block title %}{% endblock %}</div>
         </h2>
         {% if view.remaining_timeout_seconds != None %}
             {% include 'otree/includes/TimeLimit.html' with form_element_id="form" %}

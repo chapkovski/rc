@@ -3,6 +3,7 @@ from ._builtin import Page as oTreePage, WaitPage
 from .models import Constants
 import json
 
+
 class Page(oTreePage):
     instructions = False
 
@@ -14,10 +15,10 @@ class Page(oTreePage):
         r['instructions'] = self.instructions
         return r
 
+
 class Demand(Page):
     form_model = 'player'
     form_fields = ["demand", 'instructions_clarity']
-
 
 
 class Risk(Page):
@@ -42,51 +43,60 @@ class RegionKnowledge(Page):
                     setattr(self.player, full_field, True)
         return super().post()
 
+
 class WVSCorr(Page):
-   pass
+    def post(self):
+        data = json.loads(self.request.POST.get('surveyholder'))
+        if data:
+            for k, v in data.items():
+                setattr(self.player, k, v)
+        return super().post()
 
 
 class WVSJustifiability(Page):
-    pass
+    def post(self):
+        data = json.loads(self.request.POST.get('surveyholder')).get('wvs_just')
+
+        if data:
+            for k, v in data.items():
+                setattr(self.player, k, v.get('just'))
+        return super().post()
 
 
 class TrustNRisk(Page):
-    form_model = 'player'
-    form_fields = ["general_trust",
-                   "general_risk"
-                   "religion",
-                   "political",
-                     ]
 
+
+    def post(self):
+        data = json.loads(self.request.POST.get('surveyholder'))
+        print(data)
+        if data:
+            for k, v in data.items():
+                setattr(self.player, k, v)
+        return super().post()
 
 class Demographics(Page):
     form_model = 'player'
     form_fields = [
-                   "age",
-                   "education",
-                   "gender",
-                   "marital",
-                   "employment",
-                   "income", ]
-
-
-
-
-
+        "age",
+        "education",
+        "gender",
+        "marital",
+        "employment",
+        "income",
+    ]
 
 
 class FinalForToloka(Page):
-
     def is_displayed(self):
-        return self.player.session.config.get('for_toloka') and not self.player.blocked
+        return self.player.session.config.get('for_toloka') and not self.participant.vars.get('blocked')
 
 
 page_sequence = [
-    # Demand,
-    # RegionKnowledge,
+    Demand,
+    RegionKnowledge,
     WVSCorr,
-    # WVSJustifiability,
-    # TrustNRisk,
-    # Demographics,
-    # FinalForToloka,
+    WVSJustifiability,
+    TrustNRisk,
+    Demographics,
+    FinalForToloka,
 ]

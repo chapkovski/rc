@@ -32,14 +32,17 @@
         Survey
             .StylesManager
             .applyTheme("bootstrap");
-
+        const reqtext = 'Пожалуйста, ответьте на этот вопрос'
         var json = {
             requiredText: '',
+
             showQuestionNumbers: "off",
             showCompletedPage: false,
             completeText: "Next",
             questions: [
                 {
+                    isRequired: true,
+                    requiredErrorText: reqtext,
                     "type": "rating",
                     "name": "wvs_q112",
                     "title": "В какую точку Вы поместили бы Россию на  шкале, где 1 означает,  что в стране \"совсем нет коррупции\", а 10 - что «коррупция в России повсеместна». ",
@@ -48,6 +51,8 @@
                     "maxRateDescription": "Коррупция в России повсеместна"
                 },
                 {
+                    isRequired: true,
+                    requiredErrorText: reqtext,
                     "type": "rating",
                     "name": "wvs_q118",
                     "title": "Как часто, по Вашему опыту, обычные люди вроде Вас или живущие с Вами по соседству вынуждены давать взятки, дарить подарки или делать одолжения другим для того, чтобы были решены их вопросы или оказаны услуги, на которые они и так имеют право?",
@@ -71,6 +76,8 @@
                     ]
                 },
                 {
+                    isRequired: true,
+                    requiredErrorText: reqtext,
                     "type": "rating",
                     "name": "wvs_q120",
                     "title": "Как Вы считаете, насколько велик в нашей стране риск быть привлеченным к ответственности за дачу  или получение взятки, подарка или одолжения, чтобы получить государственные услуги? ",
