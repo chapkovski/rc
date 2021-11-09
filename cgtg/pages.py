@@ -55,7 +55,8 @@ class RegionalInfoChoose(FirstPage):
         if len(data.items()) != 3:
             form.add_error(None, 'Выберите ровно 3 параметра')
             return self.form_invalid(form)
-
+        names = data.keys()
+        infos_to_update = self.player.infos.filter(name__in=names).update(to_show=True)
         return super().post()
 
 

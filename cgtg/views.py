@@ -19,7 +19,7 @@ class PandasExport(View):
 
     def get(self, request, *args, **kwargs):
         events = Info.objects.all().values('owner__participant__code', 'owner__session__code', 'owner__round_number',
-                                            'region', 'region_position', 'info', 'info_position', 'value'
+                                            'region', 'region_position', 'name', 'info_position', 'value', 'to_show'
                                             )
         df = pd.DataFrame(data=events)
         if df is not None and not df.empty:
