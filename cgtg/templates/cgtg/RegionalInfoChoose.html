@@ -2,73 +2,32 @@
 {% load otree static %}
 
 {% block title %}
-    Children qualities
+    Choose regional parameters
 {% endblock %}
 
 
 {% block content %}
-    <style>
+    {% autoescape off %}
+        <table class="table">
+            {% for param in Constants.params %}
 
+                <tr>
+                    <td><input type="checkbox" name="{{ param.name }}" id="{{ param.name }}"/></td>
+                    <td><label for="{{ param.name }}">
+                        {{ param.title }}
+                    </label>
+                    </td>
+                    <td>
+                        <label for="{{ param.name }}">
+                            {{ param.description }}
+                        </label>
+                    </td>
+                </tr>
 
-    </style>
-    <script src="https://unpkg.com/survey-jquery@1.8.70/survey.jquery.min.js"></script>
-    <link href="https://unpkg.com/survey-core@1.8.72/modern.min.css" type="text/css" rel="stylesheet"/>
-    <div id="surveyElement" style="display:inline-block;width:100%;"></div>
-    <div id="surveyResult"></div>
-    <input type="hidden" id="surveyholder" name="surveyholder">
-    <script>
-        Survey.defaultBootstrapCss.navigationButton = "btn-primary btn-lg";
-        Survey
-            .StylesManager
-            .applyTheme("bootstrap");
+            {% endfor %}
+        </table>
 
-        var json = {
-            requiredText: '',
-            showQuestionNumbers: "off",
-            showCompletedPage: false,
-            completeText: "Next",
-            questions: [
-                {
-                    type: "checkbox",
-                    maxSelectedChoices: 3,
-                    name: "children_qualities",
-                    title: "Here is a list of qualities that children can be encouraged to learn at home. Which, if any, do you consider to be especially important? Please choose up to five!",
-                    isRequired: false,
-                    hasNone: true,
-                    noneText: 'None of the above',
-                    colCount: 1,
-                    choicesOrder:'random',
-                    choices: [
-                        {value: 'good_manners', text: "Good manners"},
-                        {value: 'independence', text: "Independence"},
-                        {value: 'hard_work', text: "Hard work"},
-                        {value: 'responsibility', text: "Responsibility"},
-                        {value: 'imagination', text: "Imagination"},
-                        {value: 'respectful_and_tolerant', text: "Respectful and tolerant"},
-                        {value: 'thrift', text: "Thrift"},
-                        {value: 'determination', text: "Determination"},
-                        {value: 'religious', text: "Religious"},
-                        {value: 'unselfishness', text: "Unselfishness"},
-                        {value: 'obedience', text: "Obedience"}
-                    ]
-                }
-            ]
-        };
+    {% endautoescape %}
 
-        window.survey = new Survey.Model(json);
-
-        survey
-            .onComplete
-            .add(function (sender) {
-                document
-                $('#surveyholder').val(JSON.stringify(sender.data, null, 3))
-                $('#form').submit()
-                ;
-            });
-
-        $("#surveyElement").Survey({model: survey});
-        ;
-    </script>
-
-
+    {% next_button %}
 {% endblock %}

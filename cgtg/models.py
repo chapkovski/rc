@@ -8,7 +8,8 @@ from otree.api import (
     Currency as c,
     currency_range,
 )
-from itertools import cycle
+from  markdown import  markdown
+
 import itertools
 import yaml
 import json
@@ -77,6 +78,11 @@ class Constants(BaseConstants):
     expected_time = '20  минут'
     with open(r'./data/regions.yaml') as file:
         regions = yaml.load(file, Loader=yaml.FullLoader)
+    with open(r'./data/params.yaml') as file:
+        params = yaml.load(file, Loader=yaml.FullLoader)
+        for i,j in enumerate(params):
+            params[i]['description'] = markdown(j.get('description'))
+
 
 
 class Subsession(BaseSubsession):

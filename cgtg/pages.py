@@ -38,16 +38,25 @@ class GeneralRules(FirstPage):
     form_fields = ['confirm_time', 'confirm_block']
 
 
-
 class GeneralInstructions(FirstPage):
     pass
 
 
 class RegionalInfoChoose(FirstPage):
-    form_model = 'player'
-    form_fields = ['choose_from']
+
     def is_displayed(self):
-        return self.session.config.get('endo', False)
+        return self.session.config.get('endo', False) and super().is_displayed()
+
+    def post(self):
+        self.object = self.get_object()
+        data = self.request.POST.dict()
+        form = self.get_form(data=data, files=self.request.FILES, instance=self.object)
+        data.pop('csrfmiddlewaretoken')
+        if len(data.items()) != 3:
+            form.add_error(None, 'Выберите ровно 3 параметра')
+            return self.form_invalid(form)
+
+        return super().post()
 
 
 class RegionalInfoFixed(FirstPage):
@@ -139,24 +148,24 @@ class TGBeliefs(AppPage):
 
 
 page_sequence = [
-    Part2Announcement,
-    Consent,
-    GeneralRules,
-
-    GeneralInstructions,
+    # Part2Announcement,
+    # Consent,
+    # GeneralRules,
+    #
+    # GeneralInstructions,
     RegionalInfoChoose,
-    RegionalInfoFixed,
-    CGInstructions,
-
-    CGdecision,
-    CGBeliefsInstructions,
-    CGBeliefsquiz,
-    CGBeliefDecision,
-
-    TGInstructions,
-    TGQuiz,
-    TGRoleAnnouncement,
-    TGDecision,
-    TGBeliefs,
-    TGReturnDecision
+    # RegionalInfoFixed,
+    # CGInstructions,
+    #
+    # CGdecision,
+    # CGBeliefsInstructions,
+    # CGBeliefsquiz,
+    # CGBeliefDecision,
+    #
+    # TGInstructions,
+    # TGQuiz,
+    # TGRoleAnnouncement,
+    # TGDecision,
+    # TGBeliefs,
+    # TGReturnDecision
 ]
