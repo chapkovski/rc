@@ -7,9 +7,15 @@
 
 
 {% block content %}
+    <div class="card my-3">
+    <div class="card-body">
+        <div>Выберите ниже <b>три</b> параметра, которые вы хотите знать о каждом из трех регионов, которые принимают участие в исследовании.</div>
+        <div><b>ВАЖНО:</b>единожды приняв решение о том, какие параметры будут показны про каждый из регионов, вы не сможете поменять это решение.</div>
+    </div>
+    </div>
     {% autoescape off %}
         <table class="table">
-            {% for param in Constants.params %}
+            {% for param in participant.vars.params %}
 
                 <tr>
                     <td><input type="checkbox" name="{{ param.name }}" id="{{ param.name }}"/></td>

@@ -45,7 +45,7 @@ def gen_info(player):
                      region=regionname,
                      region_position=r_position,
                      name=p.get('name'),
-                     info_label=p.get('label'),
+                     info_label=p.get('title'),
                      info_description=p.get('description'),
                      info_position=i_position,
                      value=values.get(p.get('name'))

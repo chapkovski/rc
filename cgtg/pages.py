@@ -1,6 +1,6 @@
 from otree.api import Currency as c, currency_range
 from ._builtin import Page as oTreePage, WaitPage
-from .models import Constants
+from .models import Constants, Info
 
 
 class Page(oTreePage):
@@ -56,7 +56,8 @@ class RegionalInfoChoose(FirstPage):
             form.add_error(None, 'Выберите ровно 3 параметра')
             return self.form_invalid(form)
         names = data.keys()
-        infos_to_update = self.player.infos.filter(name__in=names).update(to_show=True)
+
+        infos_to_update = Info.objects.filter(owner__participant=self.participant, name__in=names).update(to_show=True)
         return super().post()
 
 
@@ -155,18 +156,18 @@ page_sequence = [
     #
     # GeneralInstructions,
     RegionalInfoChoose,
-    # RegionalInfoFixed,
+    RegionalInfoFixed,
     # CGInstructions,
     #
     # CGdecision,
     # CGBeliefsInstructions,
     # CGBeliefsquiz,
-    # CGBeliefDecision,
+    CGBeliefDecision,
     #
     # TGInstructions,
     # TGQuiz,
     # TGRoleAnnouncement,
-    # TGDecision,
+    TGDecision,
     # TGBeliefs,
     # TGReturnDecision
 ]
