@@ -15,7 +15,7 @@ SESSION_CONFIGS = [
         display_name='Fixed Information  Neutral',
         app_sequence=[
             'cgtg',
-            # 'q'
+            'q'
         ],
         num_demo_participants=3,
     ),
@@ -25,7 +25,7 @@ SESSION_CONFIGS = [
         endo=True,
         app_sequence=[
             'cgtg',
-            # 'q'
+            'q'
         ],
         num_demo_participants=3,
     ),
@@ -33,7 +33,7 @@ SESSION_CONFIGS = [
         name='return',
         display_name='For returning decisions',
         app_sequence=[
-            # 'cgtg',
+            'cgtg',
             'q'
         ],
         num_demo_participants=3,

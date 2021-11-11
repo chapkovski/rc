@@ -7,6 +7,7 @@ we should keep this page as simple as possible so that 'view source' is friendly
 i removed many linebreaks to make output HTML cleaner
 {% endcomment %}
 {% block body_main %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css">
     {% block progress %}
 
         <nav class="navbar navbar-light bg-light  d-flex fixed-top">
@@ -71,6 +72,26 @@ i removed many linebreaks to make output HTML cleaner
     {% endif %}
 {% endblock %}
 {% block global_styles %}
+     <style>
+        .otree-body {
+            max-width: initial;
+        }
+
+        .info-button {
+            border-radius: 25px;
+            width:25px;
+            min-width:25px!important;
+            height:25px;
+            display: flex;
+            padding: 0!important;
+            justify-content: center;
+            align-items: center;
+        }
+
+         .lg {
+            font-size: 1rem
+        }
+    </style>
     <style>
     label.col-form-label{font-weight: bold}
         label.btn.btn-default.btn-secondary.active {
@@ -183,4 +204,9 @@ i removed many linebreaks to make output HTML cleaner
     <link rel='preload' href="https://unpkg.com/survey-core@1.8.72/modern.min.css" as="style"/>
     <link rel="preload" href="https://unpkg.com/survey-jquery@1.8.70/survey.jquery.min.js" as="script">
     <script src="https://unpkg.com/survey-jquery@1.8.70/survey.jquery.min.js"></script>
+     <script>
+        $(function () {
+            $('[data-toggle="popover"]').popover()
+        })
+    </script>
 {% endblock %}

@@ -61,7 +61,7 @@ class Constants(BaseConstants):
     num_rounds = 2
     apps = ['cg', 'tg']
     tg_coef = 3
-    tg_endowment = 1
+    tg_endowment = 100
     tg_full = tg_coef * tg_endowment
     bonus_for_cg_belief = c(1)
     TRUST_CHOICES = [(0, '0$'), (tg_endowment, f'{tg_endowment}$')]
@@ -161,7 +161,6 @@ class Player(BasePlayer):
         r1 = self.infos.filter(to_show=True).order_by('region_position').first().region
         infos = self.infos.filter(to_show=True, region=r1).order_by('info_position')
 
-
         return infos
 
     r1_name = models.StringField()
@@ -173,13 +172,8 @@ class Player(BasePlayer):
     r1_trust = models.IntegerField(min=0, max=Constants.tg_endowment)
     r2_trust = models.IntegerField(min=0, max=Constants.tg_endowment)
     r3_trust = models.IntegerField(min=0, max=Constants.tg_endowment)
-    r1_trust_return = models.IntegerField(min=0, max=Constants.tg_full)
-    r2_trust_return = models.IntegerField(min=0, max=Constants.tg_full)
-    r3_trust_return = models.IntegerField(min=0, max=Constants.tg_full)
-    # TODO: think about slider for beliefs
-    r1_trust_belief = models.FloatField(min=0, max=Constants.tg_full, )
-    r2_trust_belief = models.FloatField(min=0, max=Constants.tg_full, )
-    r3_trust_belief = models.FloatField(min=0, max=Constants.tg_full, )
+    trust_return = models.IntegerField(min=0, max=Constants.tg_full)
+
     confirm_time = models.BooleanField(widget=widgets.CheckboxInput,
                                        label='Я понимаю, что расчет бонусов может занять вплоть до нескольких рабочих дней')
     confirm_block = models.BooleanField(widget=widgets.CheckboxInput,

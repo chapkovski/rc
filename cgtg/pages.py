@@ -58,7 +58,8 @@ class RegionalInfoChoose(FirstPage):
 
 
 class RegionalInfoFixed(FirstPage):
-    pass
+    def is_displayed(self):
+        return self.subsession.treatment != 'return' and super().is_displayed()
 
 
 class CGAnnouncement(AppPage):
@@ -69,10 +70,6 @@ class CGInstructions(AppPage):
     app = 'cg'
 
 
-class CGquiz(AppPage):
-    app = 'cg'
-
-
 class CGdecision(AppPage):
     app = 'cg'
     form_model = 'player'
@@ -80,10 +77,16 @@ class CGdecision(AppPage):
 
 
 class CGBeliefsInstructions(AppPage):
+    def is_displayed(self):
+        return self.subsession.treatment != 'return' and super().is_displayed()
+
     app = 'cg'
 
 
 class CGBeliefsquiz(AppPage):
+    def is_displayed(self):
+        return self.subsession.treatment != 'return' and super().is_displayed()
+
     app = 'cg'
     form_model = 'player'
     form_fields = [
@@ -107,10 +110,20 @@ class CGBeliefDecision(AppPage):
     app = 'cg'
     form_model = 'player'
     form_fields = ['r1_cg_estimate', 'r2_cg_estimate', 'r3_cg_estimate']
+    def is_displayed(self):
+        return self.subsession.treatment!='return' and super().is_displayed()
 
     def vars_for_template(self):
         form = self.get_form()
-        return dict(data_to_show=zip(self.player.get_regional_data(), form))
+        fdata = []
+        for i, f in enumerate(form, start=1):
+            regname = getattr(self.player, f'r{i}_name')
+            label = f'Сколько участников из 100 назовут "Орел" в регионе {regname}?'
+            t = {'field': f,
+                 'label': label}
+            fdata.append(t)
+
+        return dict(data_to_show=zip(self.player.get_regional_data(), fdata))
 
 
 class Part2Announcement(Page):
@@ -137,11 +150,9 @@ class TGReturnDecision(AppPage):
         return self.subsession.treatment == 'return'
 
     form_model = 'player'
-    form_fields = ['r1_trust_return', 'r2_trust_return', 'r3_trust_return']
+    form_fields = ['trust_return']
 
-    def vars_for_template(self):
-        form = self.get_form()
-        return dict(data_to_show=zip(self.player.get_regional_data(), form))
+
 
 
 class TGDecision(AppPage):
@@ -154,28 +165,26 @@ class TGDecision(AppPage):
 
     def vars_for_template(self):
         form = self.get_form()
-        return dict(data_to_show=zip(self.player.get_regional_data(), form))
+        fdata = []
+        for i, f in enumerate(form, start=1):
+            regname = getattr(self.player, f'r{i}_name')
+            label = f'Сколько центов из 100 вы пошлете участнику Б, если он окажется из региона: {regname}?'
+            t = {'field': f,
+                 'label': label}
+            fdata.append(t)
 
-
-class TGBeliefs(AppPage):
-    app = 'tg'
-    form_model = 'player'
-    form_fields = ['r1_trust_belief', 'r2_trust_belief', 'r3_trust_belief']
-
-    def vars_for_template(self):
-        form = self.get_form()
-        return dict(data_to_show=zip(self.player.get_regional_data(), form))
+        return dict(data_to_show=zip(self.player.get_regional_data(), fdata))
 
 
 page_sequence = [
-    # Part2Announcement,
-    # Consent,
-    # GeneralRules,
-    # CGAnnouncement,
-    # CGInstructions,
-    # CGdecision,
-    # CGBeliefsInstructions,
-    # CGBeliefsquiz,
+    Part2Announcement,
+    Consent,
+    GeneralRules,
+    CGAnnouncement,
+    CGInstructions,
+    CGdecision,
+    CGBeliefsInstructions,
+    CGBeliefsquiz,
     RegionalInfoChoose,
     RegionalInfoFixed,
     CGBeliefDecision,
@@ -183,6 +192,5 @@ page_sequence = [
     TGQuiz,
     TGRoleAnnouncement,
     TGDecision,
-    TGBeliefs,
     TGReturnDecision
 ]
