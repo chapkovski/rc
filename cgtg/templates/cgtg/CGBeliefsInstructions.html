@@ -2,11 +2,11 @@
 {% load otree static %}
 
 {% block title %}
-    Часть 1. Этап 2. Инструкции
+   Инструкции - продолжение.
 {% endblock %}
 {% block content %}
-
-{% include 'cgtg/includes/cg_belief_instructions.html' %}
+    {% include 'cgtg/includes/instruction_alert.html' %}
+    {% include 'cgtg/includes/cg_belief_instructions.html' %}
     {% next_button %}
 {% endblock %}
 

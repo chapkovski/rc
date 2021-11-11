@@ -61,7 +61,9 @@ class Constants(BaseConstants):
     num_rounds = 2
     apps = ['cg', 'tg']
     tg_coef = 3
-    tg_endowment = 100
+    tg_endowment = 1
+    tg_endowment_curr = c(tg_endowment)
+    tg_endowment_cents = tg_endowment * 100
     tg_full = tg_coef * tg_endowment
     bonus_for_cg_belief = c(1)
     TRUST_CHOICES = [(0, '0$'), (tg_endowment, f'{tg_endowment}$')]
@@ -96,14 +98,13 @@ class Constants(BaseConstants):
 
 
 class Subsession(BaseSubsession):
+    treatment = models.StringField()
 
     def get_cg_belief_bonus(self):
         return Constants.cg_belief_bonus
 
     def get_head_bonus(self):
         return Constants.head_bonus
-
-    treatment = models.StringField()
 
     def creating_session(self):
         self.treatment = self.session.config.get('name')
@@ -112,7 +113,10 @@ class Subsession(BaseSubsession):
             for p in self.session.get_participants():
                 p.vars['regions'] = shuffler(Constants.regions)
                 p.vars['params'] = shuffler(Constants.params)
-                p.vars['appseq'] = next(apps)
+                if self.treatment == 'return':
+                    p.vars['appseq'] = Constants.apps.copy()
+                else:
+                    p.vars['appseq'] = next(apps)
         infos = []
         for p in self.get_players():
             p.app = p.participant.vars['appseq'][p.round_number - 1]
@@ -193,6 +197,11 @@ class Player(BasePlayer):
     cq_cg_belief_4 = models.IntegerField(
         label='Допустим,  вы верно (+/-10 единиц) угадали сколько людей назовут "Орел" в 2 из 3 регионов. В одном из регионов ваша оценка отличается больше чем на 10 единиц. Какой будет ваш суммарный дополнительный бонус за эти вопросы?',
         choices=Constants.cqbeliefchoices, widget=widgets.RadioSelect)
+    tg_err_counter = models.IntegerField(initial=0)
+    cq_tg_1 = models.IntegerField()
+    cq_tg_2 = models.IntegerField()
+    cq_tg_3 = models.IntegerField()
+    cq_tg_4 = models.IntegerField()
 
     def cq_cg_belief_1_error_message(self, value):
         if value != Constants.correct_cg_answers['cq_cg_belief_1']:

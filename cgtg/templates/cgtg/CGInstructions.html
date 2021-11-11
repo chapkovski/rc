@@ -2,10 +2,11 @@
 {% load otree static %}
 
 {% block title %}
-Инструкции
+    Инструкции
 {% endblock %}
 {% block content %}
-   {% include 'cgtg/includes/cg_instructions.html' %}
+    {% include 'cgtg/includes/instruction_alert.html' %}
+    {% include 'cgtg/includes/cg_instructions.html' %}
 
     {% next_button %}
 {% endblock %}

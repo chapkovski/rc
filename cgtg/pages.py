@@ -77,15 +77,10 @@ class CGdecision(AppPage):
 
 
 class CGBeliefsInstructions(AppPage):
-    def is_displayed(self):
-        return self.subsession.treatment != 'return' and super().is_displayed()
-
     app = 'cg'
 
 
 class CGBeliefsquiz(AppPage):
-    def is_displayed(self):
-        return self.subsession.treatment != 'return' and super().is_displayed()
 
     app = 'cg'
     form_model = 'player'
@@ -102,6 +97,7 @@ class CGBeliefsquiz(AppPage):
         self.player.cq_cg_err_counter += 1
         if self.player.cq_cg_err_counter > Constants.MAX_CQ_ATTEMPTS:
             self.player.blocked = True
+            self.participant.vars['blocked'] = True
             return
         return super().form_invalid(form)
 
@@ -110,15 +106,14 @@ class CGBeliefDecision(AppPage):
     app = 'cg'
     form_model = 'player'
     form_fields = ['r1_cg_estimate', 'r2_cg_estimate', 'r3_cg_estimate']
-    def is_displayed(self):
-        return self.subsession.treatment!='return' and super().is_displayed()
+
 
     def vars_for_template(self):
         form = self.get_form()
         fdata = []
         for i, f in enumerate(form, start=1):
             regname = getattr(self.player, f'r{i}_name')
-            label = f'Из 100 участников из региона {regname} сколько назовут "Орел"?'
+            label = f'Из 100 участников из региона <i>{regname}</i> сколько назовут "Орел"?'
             t = {'field': f,
                  'label': label}
             fdata.append(t)
@@ -129,6 +124,8 @@ class CGBeliefDecision(AppPage):
 class Part1Announcement(Page):
     def is_displayed(self):
         return self.round_number == 1
+
+
 class Part2Announcement(Page):
     def is_displayed(self):
         return self.round_number == 2
@@ -140,6 +137,27 @@ class TGInstructions(AppPage):
 
 class TGQuiz(AppPage):
     app = 'tg'
+
+    def is_displayed(self):
+        return self.subsession.treatment != 'return' and super().is_displayed()
+
+    form_model = 'player'
+    form_fields = [
+        'cq_tg_1',
+        'cq_tg_2',
+        'cq_tg_3',
+        'cq_tg_4', ]
+
+    def vars_for_template(self):
+        return dict(attempts=Constants.MAX_CQ_ATTEMPTS - self.player.tg_err_counter)
+
+    def form_invalid(self, form):
+        self.player.tg_err_counter += 1
+        if self.player.tg_err_counter > Constants.MAX_CQ_ATTEMPTS:
+            self.player.blocked = True
+            self.participant.vars['blocked'] = True
+            return
+        return super().form_invalid(form)
 
 
 class TGRoleAnnouncement(AppPage):
@@ -154,8 +172,6 @@ class TGReturnDecision(AppPage):
 
     form_model = 'player'
     form_fields = ['trust_return']
-
-
 
 
 class TGDecision(AppPage):
@@ -185,7 +201,7 @@ page_sequence = [
     GeneralRules,
 
     Part1Announcement,
-Part2Announcement,
+    Part2Announcement,
     CGInstructions,
     CGdecision,
     CGBeliefsInstructions,

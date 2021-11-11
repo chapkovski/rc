@@ -1,7 +1,7 @@
 {% extends "global/Page.html" %}
 {% load otree %}
 {% block title %}
-    CG Beliefs - Decision
+
 {% endblock %}
 {% block content %}
     <style>
@@ -14,18 +14,8 @@
         }
     </style>
     <div class="row">
-        <div class="col">
-            <div class="card">
-
-                <div class="card-body">
-                    <div>
-                        {% include 'cgtg/includes/cg_belief_instructions_toggler.html' %}
-
-                    </div>
-
-
-                </div>
-            </div>
+        <div class="col p-0">
+             {% include 'cgtg/includes/cg_belief_instructions.html' %}
         </div>
     </div>
 
