@@ -38,10 +38,6 @@ class GeneralRules(FirstPage):
     form_fields = ['confirm_time', 'confirm_block']
 
 
-class GeneralInstructions(FirstPage):
-    pass
-
-
 class RegionalInfoChoose(FirstPage):
 
     def is_displayed(self):
@@ -65,6 +61,10 @@ class RegionalInfoFixed(FirstPage):
     pass
 
 
+class CGAnnouncement(AppPage):
+    app = 'cg'
+
+
 class CGInstructions(AppPage):
     app = 'cg'
 
@@ -75,6 +75,8 @@ class CGquiz(AppPage):
 
 class CGdecision(AppPage):
     app = 'cg'
+    form_model = 'player'
+    form_fields = ['cg_decision']
 
 
 class CGBeliefsInstructions(AppPage):
@@ -83,6 +85,22 @@ class CGBeliefsInstructions(AppPage):
 
 class CGBeliefsquiz(AppPage):
     app = 'cg'
+    form_model = 'player'
+    form_fields = [
+        'cq_cg_belief_1',
+        'cq_cg_belief_2',
+        'cq_cg_belief_3',
+        'cq_cg_belief_4']
+
+    def vars_for_template(self):
+        return dict(attempts=Constants.MAX_CQ_ATTEMPTS - self.player.cq_cg_err_counter)
+
+    def form_invalid(self, form):
+        self.player.cq_cg_err_counter += 1
+        if self.player.cq_cg_err_counter > Constants.MAX_CQ_ATTEMPTS:
+            self.player.blocked = True
+            return
+        return super().form_invalid(form)
 
 
 class CGBeliefDecision(AppPage):
@@ -153,21 +171,18 @@ page_sequence = [
     # Part2Announcement,
     # Consent,
     # GeneralRules,
-    #
-    # GeneralInstructions,
-    RegionalInfoChoose,
-    RegionalInfoFixed,
+    # CGAnnouncement,
     # CGInstructions,
-    #
     # CGdecision,
     # CGBeliefsInstructions,
     # CGBeliefsquiz,
+    RegionalInfoChoose,
+    RegionalInfoFixed,
     CGBeliefDecision,
-    #
-    # TGInstructions,
-    # TGQuiz,
-    # TGRoleAnnouncement,
+    TGInstructions,
+    TGQuiz,
+    TGRoleAnnouncement,
     TGDecision,
-    # TGBeliefs,
-    # TGReturnDecision
+    TGBeliefs,
+    TGReturnDecision
 ]

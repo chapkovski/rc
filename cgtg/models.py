@@ -24,7 +24,6 @@ Cheating game and trust game together for the interregional project.
 """
 
 
-
 def shuffler(params):
     c = params.copy()
     random.shuffle(c)
@@ -68,11 +67,26 @@ class Constants(BaseConstants):
     TRUST_CHOICES = [(0, '0$'), (tg_endowment, f'{tg_endowment}$')]
     TG_BELIEF_CHOICES = [(i / 10, f'{i / 10}$') for i in range(0, tg_full * 10, 1)]
     MAX_CQ_ATTEMPTS = 4
+    ERR_MSG = 'Пожалуйста перечитайте инструкции и попробуйте еще раз!'
     formatter = lambda x: 'раз' if x in [0] or x > 5 else 'раза'
     MAX_CQ_ATTEMPTS_formatted = f'{MAX_CQ_ATTEMPTS} {formatter(MAX_CQ_ATTEMPTS)}'
     expected_time = '20  минут'
+    head_bonus = c(1)
+    cg_belief_bonus = c(1)
     treatment_infos = dict(fic=['corruption', 'grp', 'pop_age', 'cpi'],
-                  fin=['grp', 'pop_age', 'cpi'])
+                           fin=['grp', 'pop_age', 'cpi'])
+    cqbeliefchoices = [(0, '0$'),
+                       (1, f'{cg_belief_bonus * 1}'),
+                       (2, f'{cg_belief_bonus * 2}'),
+                       (3, f'{cg_belief_bonus * 3}'),
+                       ]
+
+    correct_cg_answers = dict(
+        cq_cg_belief_1=3,
+        cq_cg_belief_2=1,
+        cq_cg_belief_3=0,
+        cq_cg_belief_4=2
+    )
     with open(r'./data/regions.yaml') as file:
         regions = yaml.load(file, Loader=yaml.FullLoader)
     with open(r'./data/params.yaml') as file:
@@ -82,6 +96,13 @@ class Constants(BaseConstants):
 
 
 class Subsession(BaseSubsession):
+
+    def get_cg_belief_bonus(self):
+        return Constants.cg_belief_bonus
+
+    def get_head_bonus(self):
+        return Constants.head_bonus
+
     treatment = models.StringField()
 
     def creating_session(self):
@@ -102,7 +123,7 @@ class Subsession(BaseSubsession):
         Info.objects.bulk_create(infos)
         if self.treatment in ['fic', 'fin']:
             infos = Constants.treatment_infos[self.treatment]
-            infos_to_update = Info.objects.filter(owner__subsession=self, name__in=infos )
+            infos_to_update = Info.objects.filter(owner__subsession=self, name__in=infos)
             infos_to_update.update(to_show=True)
 
 
@@ -129,6 +150,20 @@ class Player(BasePlayer):
         return res
 
     app = models.StringField()
+    cg_decision = models.BooleanField(label='У вас выпало:', )
+
+    def cg_decision_choices(self):
+        choices = [(False, 'Решка'), (True, 'Орел')]
+        random.shuffle(choices)
+        return choices
+
+    def info_descriptions(self):
+        r1 = self.infos.filter(to_show=True).order_by('region_position').first().region
+        infos = self.infos.filter(to_show=True, region=r1).order_by('info_position')
+
+
+        return infos
+
     r1_name = models.StringField()
     r2_name = models.StringField()
     r3_name = models.StringField()
@@ -149,6 +184,37 @@ class Player(BasePlayer):
                                        label='Я понимаю, что расчет бонусов может занять вплоть до нескольких рабочих дней')
     confirm_block = models.BooleanField(widget=widgets.CheckboxInput,
                                         label=f'Я понимаю, что если я не смогу ответить на проверочные вопросы более чем {Constants.MAX_CQ_ATTEMPTS_formatted}, то не смогу принять дальнейшее участие в исследовании.')
+    # comprehension check
+    blocked = models.BooleanField(initial=False)
+    cq_cg_err_counter = models.IntegerField(initial=0)
+    cq_cg_belief_1 = models.IntegerField(
+        label='Если вы верно (+/-10 единиц) угадаете сколько людей назовут "Орел" в каждом из трех регионов, какой будет ваш суммарный дополнительный бонус за эти вопросы?',
+        choices=Constants.cqbeliefchoices, widget=widgets.RadioSelect)
+    cq_cg_belief_2 = models.IntegerField(
+        label='Если в регионе X 50 из 100 человек, принимающих участие в исследовании, назвали "Орел",  а ваша оценка про этот регион была 60, какой дополнительный бонус за эту оценку вы получите?',
+        choices=Constants.cqbeliefchoices, widget=widgets.RadioSelect)
+    cq_cg_belief_3 = models.IntegerField(
+        label='Если в регионе X 70 из 100 человек, принимающих участие в исследовании, назвали "Орел",  а ваша оценка про этот регион была 55, какой дополнительный бонус за эту оценку вы получите?',
+        choices=Constants.cqbeliefchoices, widget=widgets.RadioSelect)
+    cq_cg_belief_4 = models.IntegerField(
+        label='Допустим,  вы верно (+/-10 единиц) угадали сколько людей назовут "Орел" в 2 из 3 регионов. В одном из регионов ваша оценка отличается больше чем на 10 единиц. Какой будет ваш суммарный дополнительный бонус за эти вопросы?',
+        choices=Constants.cqbeliefchoices, widget=widgets.RadioSelect)
+
+    def cq_cg_belief_1_error_message(self, value):
+        if value != Constants.correct_cg_answers['cq_cg_belief_1']:
+            return Constants.ERR_MSG
+
+    def cq_cg_belief_2_error_message(self, value):
+        if value != Constants.correct_cg_answers['cq_cg_belief_2']:
+            return Constants.ERR_MSG
+
+    def cq_cg_belief_3_error_message(self, value):
+        if value != Constants.correct_cg_answers['cq_cg_belief_3']:
+            return Constants.ERR_MSG
+
+    def cq_cg_belief_4_error_message(self, value):
+        if value != Constants.correct_cg_answers['cq_cg_belief_4']:
+            return Constants.ERR_MSG
 
 
 class Info(djmodels.Model):

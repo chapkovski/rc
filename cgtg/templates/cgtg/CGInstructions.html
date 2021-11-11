@@ -2,21 +2,10 @@
 {% load otree static %}
 
 {% block title %}
-  Часть 1. Этап 1. Инструкции
+    Часть 1. Этап 1. Инструкции
 {% endblock %}
 {% block content %}
-<div class="card my-3">
-    <div class="card-body">
-        <div class="card-text">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">
-Бросьте монетку
-                </li>
-            </ul>
+   {% include 'cgtg/includes/cg_instructions.html' %}
 
-        </div>
-    </div>
-</div>
-
-{% next_button %}
+    {% next_button %}
 {% endblock %}

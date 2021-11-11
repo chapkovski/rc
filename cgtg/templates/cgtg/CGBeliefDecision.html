@@ -16,17 +16,13 @@
     <div class="row">
         <div class="col">
             <div class="card">
-                <div class="card-header">
-                    Инструкции
-                </div>
+
                 <div class="card-body">
                     <div>
-                        Угадайте сколько людей из каждого из трех регионов принимающих участие в исследовании назовут
-                        Орел
+                        {% include 'cgtg/includes/cg_belief_instructions_toggler.html' %}
+
                     </div>
-                    <div>
-                        Если вы угадаете (плюс минус 10) то получите бонус {{ Constants.bonus_for_cg_belief }}.
-                    </div>
+
 
                 </div>
             </div>
@@ -43,10 +39,10 @@
                     <div class="card-body">
                         <ul class="list-group mb-3   list-group-flush">
                             {% for foo in r.info %}
-                                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                                     {{ foo.info_label }}:
-                                  <span class="badge bg-primary text-white rounded-pill lg">{{ foo.value }}</span>
-                                 </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    {{ foo.info_label }}:
+                                    <span class="badge bg-primary text-white rounded-pill lg">{{ foo.value }}</span>
+                                </li>
                             {% endfor %}
 
 
