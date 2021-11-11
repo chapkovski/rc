@@ -118,7 +118,7 @@ class CGBeliefDecision(AppPage):
         fdata = []
         for i, f in enumerate(form, start=1):
             regname = getattr(self.player, f'r{i}_name')
-            label = f'Сколько участников из 100 назовут "Орел" в регионе {regname}?'
+            label = f'Из 100 участников из региона {regname} сколько назовут "Орел"?'
             t = {'field': f,
                  'label': label}
             fdata.append(t)

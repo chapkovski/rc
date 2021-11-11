@@ -25,7 +25,7 @@ i removed many linebreaks to make output HTML cleaner
     <div class="otree-body container">
         <h2 class="otree-title page-header">
 
-        {% block index %}Page {{ page_index }} out of {{ maxpages }}.{% endblock %}
+        {% block index %} {% endblock %}
         {% block visibletitle %}{% endblock %}
             <div class="">{% block title %}{% endblock %}</div>
         </h2>
@@ -74,7 +74,7 @@ i removed many linebreaks to make output HTML cleaner
 {% block global_styles %}
      <style>
         .otree-body {
-            max-width: initial;
+            max-width: 1000px;
         }
 
         .info-button {
