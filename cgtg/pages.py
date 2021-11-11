@@ -126,6 +126,9 @@ class CGBeliefDecision(AppPage):
         return dict(data_to_show=zip(self.player.get_regional_data(), fdata))
 
 
+class Part1Announcement(Page):
+    def is_displayed(self):
+        return self.round_number == 1
 class Part2Announcement(Page):
     def is_displayed(self):
         return self.round_number == 2
@@ -177,20 +180,21 @@ class TGDecision(AppPage):
 
 
 page_sequence = [
-    Part2Announcement,
+
     Consent,
     GeneralRules,
-    CGAnnouncement,
+
+    Part1Announcement,
+Part2Announcement,
     CGInstructions,
     CGdecision,
     CGBeliefsInstructions,
     CGBeliefsquiz,
-    RegionalInfoChoose,
-    RegionalInfoFixed,
-    CGBeliefDecision,
     TGInstructions,
     TGQuiz,
     TGRoleAnnouncement,
+    RegionalInfoChoose,
+    CGBeliefDecision,
     TGDecision,
     TGReturnDecision
 ]
