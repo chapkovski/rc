@@ -83,11 +83,17 @@ class CGBeliefsInstructions(AppPage):
 class CGBeliefsquiz(AppPage):
     app = 'cg'
     form_model = 'player'
-    form_fields = [
-        'cq_cg_belief_1',
-        'cq_cg_belief_2',
-        'cq_cg_belief_3',
-        'cq_cg_belief_4']
+
+    def get_form_fields(self):
+        if self.subsession.solo:
+            return ['cq_cg_belief_solo_1',
+                    "cq_cg_belief_solo_2"]
+        else:
+            return [
+                'cq_cg_belief_1',
+                'cq_cg_belief_2',
+                'cq_cg_belief_3',
+                'cq_cg_belief_4']
 
     def vars_for_template(self):
         return dict(attempts=Constants.MAX_CQ_ATTEMPTS - self.player.cq_cg_err_counter)
@@ -104,12 +110,19 @@ class CGBeliefsquiz(AppPage):
 class CGBeliefDecision(AppPage):
     app = 'cg'
     form_model = 'player'
-    form_fields = ['r1_cg_estimate', 'r2_cg_estimate', 'r3_cg_estimate']
+    def get_form_fields(self):
+        if self.subsession.solo:
+            return ["cg_estimate"]
+        else:
+            return ['r1_cg_estimate', 'r2_cg_estimate', 'r3_cg_estimate']
+
 
     def vars_for_template(self):
+        if self.subsession.solo:
+            return dict(label='Из 100 участников, принимающих участие в исследовании, сколько назовут "Орел"?')
         form = self.get_form()
         fdata = []
-        comment = f'(За каждый ответ, отличающийся от истинного не более чем на 10 единиц, ваш бонус увеличивается на {self.subsession.get_cg_belief_bonus}.)'
+        comment = f'(За каждый ответ, отличающийся от истинного не более чем на 10 единиц, ваш бонус увеличивается на {self.subsession.get_cg_belief_bonus()}.)'
         for i, f in enumerate(form, start=1):
             regname = getattr(self.player, f'r{i}_name')
             label = f'Из 100 участников из региона <i>{regname}</i> сколько назовут "Орел"?'
@@ -209,6 +222,7 @@ page_sequence = [
     CGBeliefsquiz,
     RegionalInfoChoose,
     CGBeliefDecision,
+
     TGInstructions,
     TGQuiz,
     TGRoleAnnouncement,
