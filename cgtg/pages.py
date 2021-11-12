@@ -199,21 +199,19 @@ class TGDecision(AppPage):
 
 
 page_sequence = [
-
     Consent,
     GeneralRules,
-
     Part1Announcement,
     Part2Announcement,
     CGInstructions,
     CGdecision,
     CGBeliefsInstructions,
     CGBeliefsquiz,
+    RegionalInfoChoose,
     CGBeliefDecision,
     TGInstructions,
     TGQuiz,
     TGRoleAnnouncement,
-    RegionalInfoChoose,
     TGDecision,
     TGReturnDecision
 ]
