@@ -58,7 +58,7 @@ def gen_info(player):
 class Constants(BaseConstants):
     name_in_url = 'cgtg'
     players_per_group = None
-    num_rounds = 2
+    num_rounds = 1
     apps = ['cg', 'tg']
     tg_coef = 3
     tg_endowment = 1
@@ -220,7 +220,7 @@ class Player(BasePlayer):
         label='Если в регионе X 70 из 100 человек, принимающих участие в исследовании, назвали "Орел",  а ваша оценка про этот регион была 55, какой дополнительный бонус за эту оценку вы получите?',
         choices=Constants.cqbeliefchoices, widget=widgets.RadioSelect)
     cq_cg_belief_4 = models.IntegerField(
-        label='Допустим,  вы верно (+/-10 единиц) угадали сколько людей назовут "Орел" в 2 из 3 регионов. В одном из регионов ваша оценка отличается больше чем на 10 единиц. Какой будет ваш суммарный дополнительный бонус за эти вопросы?',
+        label='Допустим,  вы верно (+/-10 единиц) угадали сколько людей назовут "Орел" в 2 из 3 регионов, а в третьем регионе ваша оценка отличается больше чем на 10 единиц. Какой будет ваш суммарный дополнительный бонус за эти вопросы?',
         choices=Constants.cqbeliefchoices, widget=widgets.RadioSelect)
     tg_err_counter = models.IntegerField(initial=0)
     cq_tg_1 = models.IntegerField(
