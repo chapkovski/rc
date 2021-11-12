@@ -81,7 +81,6 @@ class CGBeliefsInstructions(AppPage):
 
 
 class CGBeliefsquiz(AppPage):
-
     app = 'cg'
     form_model = 'player'
     form_fields = [
@@ -107,15 +106,16 @@ class CGBeliefDecision(AppPage):
     form_model = 'player'
     form_fields = ['r1_cg_estimate', 'r2_cg_estimate', 'r3_cg_estimate']
 
-
     def vars_for_template(self):
         form = self.get_form()
         fdata = []
+        comment = f'(За каждый ответ, отличающийся от истинного не более чем на 10 единиц, ваш бонус увеличивается на {self.subsession.get_cg_belief_bonus}.)'
         for i, f in enumerate(form, start=1):
             regname = getattr(self.player, f'r{i}_name')
             label = f'Из 100 участников из региона <i>{regname}</i> сколько назовут "Орел"?'
             t = {'field': f,
-                 'label': label}
+                 'label': label,
+                 'comment': comment}
             fdata.append(t)
 
         return dict(data_to_show=zip(self.player.get_regional_data(), fdata))
@@ -146,7 +146,8 @@ class TGQuiz(AppPage):
         'cq_tg_1',
         'cq_tg_2',
         'cq_tg_3',
-        'cq_tg_4', ]
+
+    ]
 
     def vars_for_template(self):
         return dict(attempts=Constants.MAX_CQ_ATTEMPTS - self.player.tg_err_counter)
@@ -185,11 +186,13 @@ class TGDecision(AppPage):
     def vars_for_template(self):
         form = self.get_form()
         fdata = []
+        comment = f'(Каждый цент, посланный вами участнику Б, будет умножен на {Constants.tg_coef} и любую часть полученной суммы он может послать вам назад)'
         for i, f in enumerate(form, start=1):
             regname = getattr(self.player, f'r{i}_name')
             label = f'Сколько центов из 100 вы пошлете участнику Б, если он окажется из региона: {regname}?'
             t = {'field': f,
-                 'label': label}
+                 'label': label,
+                 'comment': comment}
             fdata.append(t)
 
         return dict(data_to_show=zip(self.player.get_regional_data(), fdata))
@@ -206,11 +209,11 @@ page_sequence = [
     CGdecision,
     CGBeliefsInstructions,
     CGBeliefsquiz,
+    CGBeliefDecision,
     TGInstructions,
     TGQuiz,
     TGRoleAnnouncement,
     RegionalInfoChoose,
-    CGBeliefDecision,
     TGDecision,
     TGReturnDecision
 ]

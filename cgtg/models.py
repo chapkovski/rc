@@ -82,12 +82,22 @@ class Constants(BaseConstants):
                        (2, f'{cg_belief_bonus * 2}'),
                        (3, f'{cg_belief_bonus * 3}'),
                        ]
+    cq_tg_choices = [(0, '0$'),
+                     (1, '100 центов (1.0$)'),
+                     (2, '150 центов (1.5$)'),
+                     (3, '300 центов (3.0$)'),
+                     ]
 
     correct_cg_answers = dict(
         cq_cg_belief_1=3,
         cq_cg_belief_2=1,
         cq_cg_belief_3=0,
         cq_cg_belief_4=2
+    )
+    correct_tg_answers = dict(
+        cq_tg_1=2,
+        cq_tg_2=0,
+        cq_tg_3=1,
     )
     with open(r'./data/regions.yaml') as file:
         regions = yaml.load(file, Loader=yaml.FullLoader)
@@ -111,6 +121,7 @@ class Subsession(BaseSubsession):
         apps = itertools.cycle([Constants.apps.copy(), list(reversed(Constants.apps.copy()))])
         if self.round_number == 1:
             for p in self.session.get_participants():
+                p.vars['payable_round'] = random.randint(1, Constants.num_rounds)
                 p.vars['regions'] = shuffler(Constants.regions)
                 p.vars['params'] = shuffler(Constants.params)
                 if self.treatment == 'return':
@@ -119,6 +130,7 @@ class Subsession(BaseSubsession):
                     p.vars['appseq'] = next(apps)
         infos = []
         for p in self.get_players():
+            p.payable_round = p.round_number == p.participant.vars.get('payable_round')
             p.app = p.participant.vars['appseq'][p.round_number - 1]
             info = gen_info(p)
             infos.extend(info.get('infos'))
@@ -153,6 +165,7 @@ class Player(BasePlayer):
             res.append(t)
         return res
 
+    payable_round = models.BooleanField()
     app = models.StringField()
     cg_decision = models.BooleanField(label='У вас выпало:', )
 
@@ -173,9 +186,9 @@ class Player(BasePlayer):
     r1_cg_estimate = models.IntegerField(min=0, max=100)
     r2_cg_estimate = models.IntegerField(min=0, max=100)
     r3_cg_estimate = models.IntegerField(min=0, max=100)
-    r1_trust = models.IntegerField(min=0, max=Constants.tg_endowment)
-    r2_trust = models.IntegerField(min=0, max=Constants.tg_endowment)
-    r3_trust = models.IntegerField(min=0, max=Constants.tg_endowment)
+    r1_trust = models.IntegerField(min=0, max=Constants.tg_endowment_cents)
+    r2_trust = models.IntegerField(min=0, max=Constants.tg_endowment_cents)
+    r3_trust = models.IntegerField(min=0, max=Constants.tg_endowment_cents)
     trust_return = models.IntegerField(min=0, max=Constants.tg_full)
 
     confirm_time = models.BooleanField(widget=widgets.CheckboxInput,
@@ -198,10 +211,18 @@ class Player(BasePlayer):
         label='Допустим,  вы верно (+/-10 единиц) угадали сколько людей назовут "Орел" в 2 из 3 регионов. В одном из регионов ваша оценка отличается больше чем на 10 единиц. Какой будет ваш суммарный дополнительный бонус за эти вопросы?',
         choices=Constants.cqbeliefchoices, widget=widgets.RadioSelect)
     tg_err_counter = models.IntegerField(initial=0)
-    cq_tg_1 = models.IntegerField()
-    cq_tg_2 = models.IntegerField()
-    cq_tg_3 = models.IntegerField()
-    cq_tg_4 = models.IntegerField()
+    cq_tg_1 = models.IntegerField(
+        label='Если участник А пошлет всю начальную сумму (100 центов) участнику Б, и он из умноженной на 3 суммы (300 центов) пошлет назад 150 центов, какой будет бонус участника А?',
+        choices=Constants.cq_tg_choices, widget=widgets.RadioSelect
+    )
+    cq_tg_2 = models.IntegerField(
+        label='Если участник А пошлет всю начальную сумму (100 центов) участнику Б, и он из умноженной на 3 суммы (300 центов) ничего не пошлет назад, какой будет бонус участника А?',
+        choices=Constants.cq_tg_choices, widget=widgets.RadioSelect
+    )
+    cq_tg_3 = models.IntegerField(
+        label='Если участник А ничего не пошлет из начальной суммы (100 центов) участнику Б, какой будет бонус участника А?',
+        choices=Constants.cq_tg_choices, widget=widgets.RadioSelect
+    )
 
     def cq_cg_belief_1_error_message(self, value):
         if value != Constants.correct_cg_answers['cq_cg_belief_1']:
@@ -217,6 +238,18 @@ class Player(BasePlayer):
 
     def cq_cg_belief_4_error_message(self, value):
         if value != Constants.correct_cg_answers['cq_cg_belief_4']:
+            return Constants.ERR_MSG
+
+    def cq_tg_1_error_message(self, value):
+        if value != Constants.correct_tg_answers['cq_tg_1']:
+            return Constants.ERR_MSG
+
+    def cq_tg_2_error_message(self, value):
+        if value != Constants.correct_tg_answers['cq_tg_2']:
+            return Constants.ERR_MSG
+
+    def cq_tg_3_error_message(self, value):
+        if value != Constants.correct_tg_answers['cq_tg_3']:
             return Constants.ERR_MSG
 
 

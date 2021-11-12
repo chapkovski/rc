@@ -22,7 +22,7 @@
                 <li class="list-group-item">
         {% autoescape off %}<h6>{{ f.label }}</h6>{% endautoescape %}
                 {{ f.field }}
-                <small>(За каждый ответ, отличающийся от истинного не более чем на 10 единиц, ваш бонус увеличивается на {{ subsession.get_cg_belief_bonus }}.)</small>
+                <small>{{ f.comment }}</small>
                 </li>
 
             {% endif %}

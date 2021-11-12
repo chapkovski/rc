@@ -7,7 +7,14 @@ we should keep this page as simple as possible so that 'view source' is friendly
 i removed many linebreaks to make output HTML cleaner
 {% endcomment %}
 {% block body_main %}
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css"
+          as="style">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css">
+    <link rel="preload" as="script" href="{% static 'global/js/survey.jquery.min.js' %}">
+    <script src="{% static 'global/js/survey.jquery.min.js' %}"></script>
+    <link rel="preload" as="script" href="{% static 'global/js/showdown.min.js' %}">
+    <script src="{% static 'global/js/showdown.min.js' %}"></script>
+
     {% block progress %}
 
         <nav class="navbar navbar-light bg-light  d-flex fixed-top">
@@ -25,8 +32,8 @@ i removed many linebreaks to make output HTML cleaner
     <div class="otree-body container">
         <h2 class="otree-title page-header">
 
-        {% block index %} {% endblock %}
-        {% block visibletitle %}{% endblock %}
+            {% block index %} {% endblock %}
+            {% block visibletitle %}{% endblock %}
             <div class="">{% block title %}{% endblock %}</div>
         </h2>
         {% if view.remaining_timeout_seconds != None %}
@@ -43,7 +50,7 @@ i removed many linebreaks to make output HTML cleaner
             <div class="_otree-content">{% block content %}{% endblock %}</div>
         </form>
         <br/>
-           {% include 'global/footer.html' %}
+        {% include 'global/footer.html' %}
 
         {# need the default:False for projects with old MTurkLandingPage #}
         {% if view.is_debug|default:False %}
@@ -72,28 +79,31 @@ i removed many linebreaks to make output HTML cleaner
     {% endif %}
 {% endblock %}
 {% block global_styles %}
-     <style>
+    <style>
         .otree-body {
             max-width: 1000px;
         }
 
         .info-button {
             border-radius: 25px;
-            width:25px;
-            min-width:25px!important;
-            height:25px;
+            width: 25px;
+            min-width: 25px !important;
+            height: 25px;
             display: flex;
-            padding: 0!important;
+            padding: 0 !important;
             justify-content: center;
             align-items: center;
         }
 
-         .lg {
+        .lg {
             font-size: 1rem
         }
     </style>
     <style>
-    label.col-form-label{font-weight: bold}
+        label.col-form-label {
+            font-weight: bold
+        }
+
         label.btn.btn-default.btn-secondary.active {
             color: #fff;
             background-color: #0d6efd;
@@ -202,9 +212,10 @@ i removed many linebreaks to make output HTML cleaner
         }
     </style>
     <link rel='preload' href="https://unpkg.com/survey-core@1.8.72/modern.min.css" as="style"/>
-    <link rel="preload" href="https://unpkg.com/survey-jquery@1.8.70/survey.jquery.min.js" as="script">
-    <script src="https://unpkg.com/survey-jquery@1.8.70/survey.jquery.min.js"></script>
-     <script>
+
+
+
+    <script>
         $(function () {
             $('[data-toggle="popover"]').popover()
         })
