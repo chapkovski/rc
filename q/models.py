@@ -1,317 +1,97 @@
-from otree.api import *
-from .choices import *
-from .constants import Constants
-import json
-import itertools
-import random
-from math import copysign
+from otree.api import (
+    models,
+    widgets,
+    BaseConstants,
+    BaseSubsession,
+    BaseGroup,
+    BasePlayer,
+    Currency as c,
+    currency_range,
+)
+from .choices import choices
 
-# TODO: remove proportions from methods
-# TODO: write down the logic of treatment
-# TODO: what to do with recipieints?
-f = lambda x: f'{(x / 100):.2f}$'
+author = ' Authors: Chapkovski, Mozolyuk. HSE-Moscow.'
+
+doc = """
+Post experimental questionnaire for the interregional project.
+"""
+
+
+class Constants(BaseConstants):
+    name_in_url = 'q'
+    players_per_group = None
+    num_rounds = 1
 
 
 class Subsession(BaseSubsession):
-    treatment = models.StringField()
-
-
-def creating_session(subsession):
-    subsession.treatment = subsession.session.config.get('name')
-    orders = [False, True]
-    partner_positions = itertools.cycle([False, True])
-
-    for p in subsession.get_players():
-        c = sorted(REVEAL_CHOICES, key=lambda x: x[0], reverse=random.choice(orders))
-        p.reveal_order = json.dumps(c)
-        p.partner_position = next(partner_positions)
-        p.egoendowment = Constants.DICTATOR_ENDOWMENT
-        p.alterendowment = Constants.BASIC_ENDOWMENT
+    pass
 
 
 class Group(BaseGroup):
     pass
 
 
-def reveal_choices(player):
-    return json.loads(player.reveal_order)
-
-
 class Player(BasePlayer):
-    # Main vars
-    opinion_lgbt = models.BooleanField(choices=OPINION_CHOICES, widget=widgets.RadioSelectHorizontal, label='')
-    partner_position = models.BooleanField()
-    aligned = models.BooleanField()
-    reveal = models.BooleanField()
-    dg_decision = models.IntegerField(widget=widgets.RadioSelectHorizontal)
-    payable = models.BooleanField()
-    cq_err_counter = models.IntegerField(initial=0)
-    blocked = models.BooleanField(initial=False)
+    # knowledge block
+    knowledge_arkhangelsk_live_in = models.BooleanField()
+    knowledge_arkhangelsk_family = models.BooleanField()
+    knowledge_arkhangelsk_press = models.BooleanField()
+    knowledge_arkhangelsk_network = models.BooleanField()
+    knowledge_arkhangelsk_other = models.BooleanField()
+    knowledge_arkhangelsk_none = models.BooleanField()
+    knowledge_moscow_live_in = models.BooleanField()
+    knowledge_moscow_family = models.BooleanField()
+    knowledge_moscow_press = models.BooleanField()
+    knowledge_moscow_network = models.BooleanField()
+    knowledge_moscow_other = models.BooleanField()
+    knowledge_moscow_none = models.BooleanField()
+    knowledge_voronezh_live_in = models.BooleanField()
+    knowledge_voronezh_family = models.BooleanField()
+    knowledge_voronezh_press = models.BooleanField()
+    knowledge_voronezh_network = models.BooleanField()
+    knowledge_voronezh_other = models.BooleanField()
+    knowledge_voronezh_none = models.BooleanField()
+    # end of knowledge block
+    #     WVS corruption block
+    wvs_q112 = models.IntegerField()
+    wvs_q118 = models.IntegerField()
+    wvs_q120 = models.IntegerField()
+    # WVS justifiability block
+    wvs_q177 = models.IntegerField()
+    wvs_q178 = models.IntegerField()
+    wvs_q179 = models.IntegerField()
+    wvs_q180 = models.IntegerField()
+    wvs_q181 = models.IntegerField()
 
-    def html_dg_decision_choices(self):
-        _choices = dg_decision_choices(self)
-        res = []
-        for i, j in enumerate(_choices):
-            res.append(dict(id=i, value=j[0], label=j[1]))
-        return res
-
-    def cq_choices(self):
-        return [dict(id=0, value=0, label='0$'),
-                dict(id=1, value=50, label='0.50$'),
-                dict(id=2, value=100, label='1.00$'),
-                dict(id=3, value=150, label='1.50$'), ]
-
-    def payoff_table(self):
-        conv_ = {-1: 'Взять', 0: 'Оставить без изменений', 1: 'Отдать'}
-
-        def conv(v):
-            if v == 0:
-                return conv_[0]
-            return conv_[copysign(1, v)]
-
-        _choices = dg_decision_choices(self)
-
-        res = []
-        for i in _choices:
-            res.append(dict(decision=i[1], ego=f(Constants.DICTATOR_ENDOWMENT - i[0]),
-                            alter=f(Constants.BASIC_ENDOWMENT + i[0]),
-                            label=conv(i[0])))
-        return res
-
-    def get_partner_opinion(self):
-        return 'СОГЛАСИЛСЯ' if self.partner_position else 'НЕ СОГЛАСИЛСЯ'
-
-    @property
-    def reverted_opinion(self):
-        try:
-            return 'не согласны' if (self.opinion_lgbt) else 'согласны'
-        except TypeError:
-            # just for debugging
-            return 'не согласны'
-
-    def reverted_opinion_single(self):
-        try:
-            return 'не согласен' if (self.opinion_lgbt) else 'согласен'
-        except TypeError:
-            # just for debugging
-            return 'не согласен'
-
-    opinion_competition = models.BooleanField(choices=OPINION_CHOICES, widget=widgets.RadioSelectHorizontal,
-                                              label='')
-
-    opinion_covid = models.BooleanField(choices=OPINION_CHOICES, widget=widgets.RadioSelectHorizontal, label='')
-
-    risk_general = models.IntegerField()
-    risk_financial_matters = models.IntegerField()
-    risk_free = models.IntegerField()
-    risk_profession = models.IntegerField()
-    risk_health = models.IntegerField()
-    risk_strangers = models.IntegerField()
-    risk_driving = models.IntegerField()
-    sdi_politics = models.StringField()
-    sdi_neighbors = models.StringField()
-    sdi_friends = models.StringField()
-    sdi_family = models.StringField()
-    scs_habits = models.IntegerField()
-    scs_why = models.IntegerField()
-    scs_conversation = models.IntegerField()
-    scs_listening = models.IntegerField()
-    scs_quarrel = models.IntegerField()
-    ias_friend = models.StringField()
-    ias_coworker = models.StringField()
-    ias_stranger = models.StringField()
-    # REASONS
-    reason_dg = models.LongStringField(
-        label='Вспомните, пожалуйста, свое решение о том отдавать или брать деньги у участника Б, с которым вы были в паре. Чем вы руководствовались при принятии вашего решения?')
-    keyword_dg_1 = models.StringField()
-    keyword_dg_2 = models.StringField()
-    keyword_dg_3 = models.StringField()
-    reason_reveal = models.LongStringField(
-        label="""Вспомните, пожалуйста, ваше решение относительно того, узнавать или не узнавать ответ участника Б. Чем вы руководствовались при принятии вашего решения?""")
-    keyword_rev_1 = models.StringField()
-    keyword_rev_2 = models.StringField()
-    keyword_rev_3 = models.StringField()
-
-    # Comprehension questions
-    cq1_CG = models.IntegerField(
-        label='Реальное значение людей, назвавших Орла, составило 53 из 100. Если вы назвали 87, сколько вы получите в качестве бонуса?',
-        choices=CQ1_CHOICES,
-        widget=widgets.RadioSelectHorizontal)
-    cq2_CG = models.IntegerField(
-        label='Реальное значение людей, назвавших Орла, составило 53 из 100. Если вы назвали 42, сколько вы получите в качестве бонуса?',
-        choices=CQ1_CHOICES,
-        widget=widgets.RadioSelectHorizontal)
-    cq3_CG = models.IntegerField(
-        label='Реальное значение людей, назвавших Орла, составило 53 из 100. Если вы назвали 43, сколько вы получите в качестве бонуса?',
-        choices=CQ1_CHOICES,
-        widget=widgets.RadioSelectHorizontal)
-    cq1_ego = models.IntegerField(label=Constants.CQ_EGO_LABEL, choices=CQ2_CHOICES,
-                                  widget=widgets.RadioSelectHorizontal)
-    cq1_alter = models.IntegerField(label=Constants.CQ_ALTER_LABEL, choices=CQ2_CHOICES,
-                                    widget=widgets.RadioSelectHorizontal)
-    cq2_ego = models.IntegerField(label=Constants.CQ_EGO_LABEL, choices=CQ2_CHOICES,
-                                  widget=widgets.RadioSelectHorizontal)
-    cq2_alter = models.IntegerField(label=Constants.CQ_ALTER_LABEL, choices=CQ2_CHOICES,
-                                    widget=widgets.RadioSelectHorizontal)
-    cq3_ego = models.IntegerField(label=Constants.CQ_EGO_LABEL, choices=CQ2_CHOICES,
-                                  widget=widgets.RadioSelectHorizontal)
-    cq3_alter = models.IntegerField(label=Constants.CQ_ALTER_LABEL, choices=CQ2_CHOICES,
-                                    widget=widgets.RadioSelectHorizontal)
-
-    #   other   main variables
-    reveal_order = models.StringField()
-    egoendowment = models.IntegerField()
-    alterendowment = models.IntegerField()
-    # BELIEFS:
-    reveal_belief = models.IntegerField(min=0, max=100)
-    dg_belief_ra = models.IntegerField()
-    dg_belief_rb_nonrev = models.IntegerField()
-    dg_belief_rb_rev_diff = models.IntegerField()
-    dg_belief_rb_rev_same = models.IntegerField()
-    dg_belief_fr_diff = models.IntegerField()
-    dg_belief_fr_same = models.IntegerField()
-    proportion = models.IntegerField(min=0, max=100, label='')
-    # DEMOGRAPHICS
+    # general risk, trust, political, religion
+    general_risk = models.IntegerField(label='Укажите, пожалуйста, насколько Вы в целом любите рисковать', )
+    general_trust = models.IntegerField(label="""
+    Если говорить в целом, Вы считаете, что большинству людей можно доверять или нужно быть очень
+    осторожными в отношениях с людьми?""", choices=choices.TRUST_CHOICES)
     religion = models.IntegerField(label="""
-    Насколько сильно вы верите в существование Бога? (укажите свой ответ в диапазоне от 1 = совсем нет 5 = очень сильно)
-    """, choices=range(1, 6), widget=widgets.RadioSelectHorizontal)
+          Насколько сильно вы верите в существование Бога? (укажите свой ответ в диапазоне от 1 = совсем нет 5 = очень сильно)
+          """, choices=range(1, 6), widget=widgets.RadioSelectHorizontal)
     political = models.IntegerField(label="""
-    Ниже представлена 7-балльная шкала, на которой политические взгляды, которых могут придерживаться люди, расположены от крайне либеральных (слева) до крайне консервативных (справа). Куда бы вы поставили себя на этой шкале?
-    """, choices=range(0, 8), widget=widgets.RadioSelectHorizontal)
-    age = models.StringField(label='Укажите ваш возраст:', choices=AGE_CHOICES, widget=widgets.RadioSelect)
+          Ниже представлена 7-балльная шкала, на которой политические взгляды, которых могут придерживаться люди, расположены от крайне либеральных (слева) до крайне консервативных (справа). Куда бы вы поставили себя на этой шкале?
+          """, choices=range(0, 8), widget=widgets.RadioSelectHorizontal)
+    # DEMOGRAPHICS
+    age = models.StringField(label='Укажите ваш возраст:', choices=choices.AGE_CHOICES, widget=widgets.RadioSelect)
     education = models.StringField(
         label="Какой самый высокий уровень школы вы закончили или какую высшую степень вы получили?",
-        choices=EDUCATION_CHOICES, widget=widgets.RadioSelect)
+        choices=choices.EDUCATION_CHOICES, widget=widgets.RadioSelect)
     gender = models.StringField(label='Укажите ваш пол:',
-                                choices=GENDER_CHOICES, widget=widgets.RadioSelect)
+                                choices=choices.GENDER_CHOICES, widget=widgets.RadioSelect)
     marital = models.StringField(label='В настоящий момент вы:',
-                                 choices=MARITAL_CHOICES, widget=widgets.RadioSelect)
+                                 choices=choices.MARITAL_CHOICES, widget=widgets.RadioSelect)
     employment = models.StringField(label='В настоящий момент вы:',
-                                    choices=EMPLOYMENT_CHOICES, widget=widgets.RadioSelect)
+                                    choices=choices.EMPLOYMENT_CHOICES, widget=widgets.RadioSelect)
     income = models.StringField(
         label="Какое высказывание наиболее точно описывает финансовое положение вашей семьи?",
-        choices=INCOME_CHOICES,
+        choices=choices.INCOME_CHOICES,
         widget=widgets.RadioSelect()
     )
-
     # Demand and clarity
     demand = models.LongStringField()
     instructions_clarity = models.IntegerField(label="""
-    Насколько понятными и ясными были для вас инструкции? (укажите свой ответ в диапазоне от 1 = совсем непонятны 5 = абсолютно понятны)
-    """, choices=range(1, 6), widget=widgets.RadioSelectHorizontal)
-
-
-def dg_decision_choices(player):
-    ints = list(range(-50, 51, 10))
-
-    return [(i, f(i)) for i in ints]
-
-
-def cq1_ego_error_message(player, value):
-    if value != 50:
-        return Constants.ERR_MSG
-
-
-def cq1_alter_error_message(player, value):
-    if value != 100:
-        return Constants.ERR_MSG
-
-
-def cq2_ego_error_message(player, value):
-    if value != 100:
-        return Constants.ERR_MSG
-
-
-def cq2_alter_error_message(player, value):
-    if value != 50:
-        return Constants.ERR_MSG
-
-
-def cq3_ego_error_message(player, value):
-    if value != 150:
-        return Constants.ERR_MSG
-
-
-def cq3_alter_error_message(player, value):
-    if value != 0:
-        return Constants.ERR_MSG
-
-
-# Risk
-risk_general = models.PositiveIntegerField(
-    label='',
-    choices=Constants.RISK_CHOICES,
-    widget=LikertWidget(
-        quote=_(
-            "Please, indicate your general attitude to risk"),
-        label=_(
-            """. Please indicate your answer on a scale from 0 to 10. A 0 means “completely unwilling to take risk,” and a 10 means “very willing to take risk.”
-            """),
-        left=_('I am completely unwilling to take risk'),
-        right=_('I am very willing to take risk'),
-    )
-)
-
-risk_fin = models.PositiveIntegerField(
-    label=_("""In financial matters'"""),
-    choices=Constants.RISK_CHOICES,
-    widget=widgets.RadioSelectHorizontal()
-)
-
-risk_sport = models.PositiveIntegerField(
-    label=_("""In leisure and sport"""),
-    choices=Constants.RISK_CHOICES,
-    widget=widgets.RadioSelectHorizontal()
-)
-
-risk_prof = models.PositiveIntegerField(
-    label=_("""In professional career"""),
-    choices=Constants.RISK_CHOICES,
-    widget=widgets.RadioSelectHorizontal()
-)
-
-risk_health = models.PositiveIntegerField(
-    label=_("""In health"""),
-    choices=Constants.RISK_CHOICES,
-    widget=widgets.RadioSelectHorizontal()
-)
-
-risk_strangers = models.PositiveIntegerField(
-    label=_("""With strangers"""),
-    choices=Constants.RISK_CHOICES,
-    widget=widgets.RadioSelectHorizontal()
-)
-risk_drive = models.PositiveIntegerField(
-    label=_("""While driving"""),
-    choices=Constants.RISK_CHOICES,
-    widget=widgets.RadioSelectHorizontal()
-)
-
-ready_help = models.IntegerField(
-    label=_('Willingness to spend money even at not return'),
-    choices=Constants.ready_help_choices,
-    widget=widgets.RadioSelect)
-
-#Big 5
-big5_1 = models.IntegerField(label=_('I see myself as someone who is reserved'),
-                                 choices=Constants.agreement_choices_5DNK, widget=widgets.RadioSelect)
-    big5_2 = models.IntegerField(label=_('I see myself as someone who is generally trusting'),
-                                 choices=Constants.agreement_choices_5DNK, widget=widgets.RadioSelect)
-    big5_3 = models.IntegerField(label=_('I see myself as someone who tends to be lazy'),
-                                 choices=Constants.agreement_choices_5DNK, widget=widgets.RadioSelect)
-    big5_4 = models.IntegerField(label=_('I see myself as someone who is relaxed, handles stress well'),
-                                 choices=Constants.agreement_choices_5DNK, widget=widgets.RadioSelect)
-    big5_5 = models.IntegerField(label=_('I see myself as someone who has few artistic interests'),
-                                 choices=Constants.agreement_choices_5DNK, widget=widgets.RadioSelect)
-    big5_6 = models.IntegerField(label=_('I see myself as someone who is outgoing, sociable'),
-                                 choices=Constants.agreement_choices_5DNK, widget=widgets.RadioSelect)
-    big5_7 = models.IntegerField(label=_('I see myself as someone who tends to find fault with others'),
-                                 choices=Constants.agreement_choices_5DNK, widget=widgets.RadioSelect)
-    big5_8 = models.IntegerField(label=_('I see myself as someone who does a thorough job'),
-                                 choices=Constants.agreement_choices_5DNK, widget=widgets.RadioSelect)
-    big5_9 = models.IntegerField(label=_('I see myself as someone who gets nervous easily'),
-                                 choices=Constants.agreement_choices_5DNK, widget=widgets.RadioSelect)
-    big5_10 = models.IntegerField(label=_('I see myself as someone who has an active imagination'),
-                                  choices=Constants.agreement_choices_5DNK, widget=widgets.RadioSelect)
-    big5_11 = models.IntegerField(label=_('I see myself as someone who is reserved'),
-                                  choices=Constants.agreement_choices_5DNK, widget=widgets.RadioSelect)
+       Насколько понятными и ясными были для вас инструкции? (укажите свой ответ в диапазоне от 1 = совсем непонятны 5 = абсолютно понятны)
+       """, choices=range(1, 6), widget=widgets.RadioSelectHorizontal)
