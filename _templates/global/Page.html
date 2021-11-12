@@ -14,7 +14,11 @@ i removed many linebreaks to make output HTML cleaner
     <script src="{% static 'global/js/survey.jquery.min.js' %}"></script>
     <link rel="preload" as="script" href="{% static 'global/js/showdown.min.js' %}">
     <script src="{% static 'global/js/showdown.min.js' %}"></script>
-
+    <style>
+        .form-group.has-error.required {
+            background: rgb(255, 200, 200);
+        }
+    </style>
     {% block progress %}
 
         <nav class="navbar navbar-light bg-light  d-flex fixed-top">

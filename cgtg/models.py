@@ -92,7 +92,9 @@ class Constants(BaseConstants):
         cq_cg_belief_1=3,
         cq_cg_belief_2=1,
         cq_cg_belief_3=0,
-        cq_cg_belief_4=2
+        cq_cg_belief_4=2,
+        cq_cg_belief_solo_1=1,
+        cq_cg_belief_solo_2=0,
     )
     correct_tg_answers = dict(
         cq_tg_1=2,
@@ -109,6 +111,7 @@ class Constants(BaseConstants):
 
 class Subsession(BaseSubsession):
     treatment = models.StringField()
+    solo = models.BooleanField()
 
     def get_cg_belief_bonus(self):
         return Constants.cg_belief_bonus
@@ -118,6 +121,7 @@ class Subsession(BaseSubsession):
 
     def creating_session(self):
         self.treatment = self.session.config.get('name')
+        self.solo = self.treatment == 'return'
         apps = itertools.cycle([Constants.apps.copy(), list(reversed(Constants.apps.copy()))])
         if self.round_number == 1:
             for p in self.session.get_participants():
@@ -183,13 +187,15 @@ class Player(BasePlayer):
     r1_name = models.StringField()
     r2_name = models.StringField()
     r3_name = models.StringField()
+    cg_estimate = models.IntegerField(min=0, max=100)
     r1_cg_estimate = models.IntegerField(min=0, max=100)
     r2_cg_estimate = models.IntegerField(min=0, max=100)
     r3_cg_estimate = models.IntegerField(min=0, max=100)
     r1_trust = models.IntegerField(min=0, max=Constants.tg_endowment_cents)
     r2_trust = models.IntegerField(min=0, max=Constants.tg_endowment_cents)
     r3_trust = models.IntegerField(min=0, max=Constants.tg_endowment_cents)
-    trust_return = models.IntegerField(min=0, max=Constants.tg_full)
+    trust_return = models.IntegerField(min=0, max=100,
+                                       label='Какую долю (от 0% до 100%) из того, что вам пошлет участник А, вы вернете ему назад?')
 
     confirm_time = models.BooleanField(widget=widgets.CheckboxInput,
                                        label='Я понимаю, что расчет бонусов может занять вплоть до нескольких рабочих дней')
@@ -198,6 +204,12 @@ class Player(BasePlayer):
     # comprehension check
     blocked = models.BooleanField(initial=False)
     cq_cg_err_counter = models.IntegerField(initial=0)
+    cq_cg_belief_solo_1 = models.IntegerField(
+        label='Если  50 человек из 100, принимающих участие в исследовании, назвали "Орел",  а ваша оценка была 60, какой дополнительный бонус за эту оценку вы получите?',
+        choices=Constants.cqbeliefchoices, widget=widgets.RadioSelect)
+    cq_cg_belief_solo_2 = models.IntegerField(
+        label='Если 70 человек из 100, принимающих участие в исследовании, назвали "Орел",  а ваша оценка была 55, какой дополнительный бонус за эту оценку вы получите?',
+        choices=Constants.cqbeliefchoices, widget=widgets.RadioSelect)
     cq_cg_belief_1 = models.IntegerField(
         label='Если вы верно (+/-10 единиц) угадаете сколько людей назовут "Орел" в каждом из трех регионов, какой будет ваш суммарный дополнительный бонус за эти вопросы?',
         choices=Constants.cqbeliefchoices, widget=widgets.RadioSelect)
@@ -223,6 +235,14 @@ class Player(BasePlayer):
         label='Если участник А ничего не пошлет из начальной суммы (100 центов) участнику Б, какой будет бонус участника А?',
         choices=Constants.cq_tg_choices, widget=widgets.RadioSelect
     )
+
+    def cq_cg_belief_solo_1_error_message(self, value):
+        if value != Constants.correct_cg_answers['cq_cg_belief_solo_1']:
+            return Constants.ERR_MSG
+
+    def cq_cg_belief_solo_2_error_message(self, value):
+        if value != Constants.correct_cg_answers['cq_cg_belief_solo_2']:
+            return Constants.ERR_MSG
 
     def cq_cg_belief_1_error_message(self, value):
         if value != Constants.correct_cg_answers['cq_cg_belief_1']:

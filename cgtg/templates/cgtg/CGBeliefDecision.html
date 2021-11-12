@@ -6,7 +6,7 @@
 {% block content %}
     <style>
         .otree-body {
-            max-width: 1000px!important;
+            max-width: 1000px !important;
         }
 
         .lg {
@@ -15,20 +15,24 @@
     </style>
     <div class="row">
         <div class="col p-0">
-             {% include 'cgtg/includes/cg_belief_instructions.html' %}
+            {% include 'cgtg/includes/cg_belief_instructions.html' %}
         </div>
     </div>
-
-    <div class="row">
-        {% include 'cgtg/includes/regional_desc.html' %}
+    {% if subsession.solo %}
+        {% formfield player.cg_estimate label=label %}
+    {% else %}
 
         <div class="row">
-            {% for r,f in data_to_show %}
-                {% include 'cgtg/includes/single_region_info.html' with r=r f=f%}
-            {% endfor %}
+            {% include 'cgtg/includes/regional_desc.html' %}
 
+            <div class="row">
+                {% for r,f in data_to_show %}
+                    {% include 'cgtg/includes/single_region_info.html' with r=r f=f %}
+                {% endfor %}
+
+            </div>
         </div>
-    </div>
+    {% endif %}
 
     {% next_button %}
 
