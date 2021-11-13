@@ -2,6 +2,7 @@ from os import environ
 
 SESSION_CONFIGS = [
     dict(
+        debug=False,
         name='fic',
         display_name='Fixed Information + Corruption',
         app_sequence=[
