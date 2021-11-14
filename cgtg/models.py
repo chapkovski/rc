@@ -235,7 +235,13 @@ class Player(BasePlayer):
         label='Если участник А ничего не пошлет из начальной суммы (100 центов) участнику Б, какой будет бонус участника А?',
         choices=Constants.cq_tg_choices, widget=widgets.RadioSelect
     )
-
+    # user agent block
+    useragent_is_mobile = models.BooleanField()
+    useragent_is_bot = models.BooleanField()
+    useragent_browser_family = models.StringField()
+    useragent_os_family = models.StringField()
+    useragent_device_family = models.StringField()
+    # user agent block END
     def cq_cg_belief_solo_1_error_message(self, value):
         if value != Constants.correct_cg_answers['cq_cg_belief_solo_1']:
             return Constants.ERR_MSG

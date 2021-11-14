@@ -7,6 +7,9 @@ import json
 class Page(oTreePage):
     instructions = False
 
+    def _is_displayed(self):
+        return not self.participant.vars.get('blocked') and self.is_displayed()
+
     def get_context_data(self, **context):
         r = super().get_context_data(**context)
         r['maxpages'] = self.participant._max_page_index
@@ -65,7 +68,6 @@ class WVSJustifiability(Page):
 
 class TrustNRisk(Page):
 
-
     def post(self):
         data = json.loads(self.request.POST.get('surveyholder'))
         print(data)
@@ -73,6 +75,7 @@ class TrustNRisk(Page):
             for k, v in data.items():
                 setattr(self.player, k, v)
         return super().post()
+
 
 class Demographics(Page):
     form_model = 'player'
@@ -84,6 +87,10 @@ class Demographics(Page):
         "employment",
         "income",
     ]
+
+    def before_next_page(self):
+        self.player.payable = True
+        self.participant.vars['payable_status'] = True
 
 
 class FinalForToloka(Page):

@@ -1,6 +1,10 @@
 from otree.api import Currency as c, currency_range
 from ._builtin import Page as oTreePage, WaitPage
 from .models import Constants, Info
+import logging
+
+logger = logging.getLogger(__name__)
+from django_user_agents.utils import get_user_agent
 
 
 class Page(oTreePage):
@@ -19,7 +23,7 @@ class AppPage(Page):
     app = None
 
     def _is_displayed(self):
-        return self.player.app == self.app and self.is_displayed()
+        return self.player.app == self.app and not self.participant.vars.get('blocked') and self.is_displayed()
 
 
 class FirstPage(Page):
@@ -30,7 +34,14 @@ class FirstPage(Page):
 
 
 class Consent(FirstPage):
-    pass
+    def get(self, *args, **kwargs):
+        user_agent = get_user_agent(self.request)
+        self.player.useragent_is_mobile = user_agent.is_mobile
+        self.player.useragent_is_bot = user_agent.is_bot
+        self.player.useragent_browser_family = user_agent.browser.family
+        self.player.useragent_os_family = user_agent.os.family
+        self.player.useragent_device_family = user_agent.device.family
+        return super().get()
 
 
 class GeneralRules(FirstPage):
@@ -103,19 +114,21 @@ class CGBeliefsquiz(AppPage):
         if self.player.cq_cg_err_counter > Constants.MAX_CQ_ATTEMPTS:
             self.player.blocked = True
             self.participant.vars['blocked'] = True
-            return
+            self._increment_index_in_pages()
+            return self._redirect_to_page_the_user_should_be_on()
+
         return super().form_invalid(form)
 
 
 class CGBeliefDecision(AppPage):
     app = 'cg'
     form_model = 'player'
+
     def get_form_fields(self):
         if self.subsession.solo:
             return ["cg_estimate"]
         else:
             return ['r1_cg_estimate', 'r2_cg_estimate', 'r3_cg_estimate']
-
 
     def vars_for_template(self):
         if self.subsession.solo:
@@ -170,7 +183,9 @@ class TGQuiz(AppPage):
         if self.player.tg_err_counter > Constants.MAX_CQ_ATTEMPTS:
             self.player.blocked = True
             self.participant.vars['blocked'] = True
-            return
+            self._increment_index_in_pages()
+            return self._redirect_to_page_the_user_should_be_on()
+
         return super().form_invalid(form)
 
 
@@ -211,6 +226,11 @@ class TGDecision(AppPage):
         return dict(data_to_show=zip(self.player.get_regional_data(), fdata))
 
 
+class Blocked(Page):
+    def is_displayed(self):
+        return self.player.blocked
+
+
 page_sequence = [
     Consent,
     GeneralRules,
@@ -227,5 +247,6 @@ page_sequence = [
     TGQuiz,
     TGRoleAnnouncement,
     TGDecision,
-    TGReturnDecision
+    TGReturnDecision,
+    Blocked
 ]
