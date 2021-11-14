@@ -2,7 +2,7 @@ from markupsafe import escape, Markup
 
 CQ_CHOICES = [(0, '0$'), (50, '0.50$'), (100, '1.00$'), (150, '1.50$')]
 
-REVEAL_CHOICES = [(True, Markup('Я  хочу узнать ответ участника Б')),
+REVEAL_CHOICES = [(True, Markup('Я хочу узнать ответ участника Б')),
                   (False, 'Я не хочу узнать ответ участника Б')]
 OPINION_CHOICES = [(True, 'Согласен/согласна'), (False, 'Не согласен/не согласна'), ]
 AGE_CHOICES = ["Младше 18 лет",

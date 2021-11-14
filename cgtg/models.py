@@ -55,10 +55,11 @@ def gen_info(player):
     return dict(regions=region_names, infos=res, params=params)
 
 
+
 class Constants(BaseConstants):
     name_in_url = 'cgtg'
     players_per_group = None
-    num_rounds = 1
+    num_rounds = 2
     apps = ['cg', 'tg']
     tg_coef = 3
     tg_endowment = 1
@@ -69,7 +70,7 @@ class Constants(BaseConstants):
     TRUST_CHOICES = [(0, '0$'), (tg_endowment, f'{tg_endowment}$')]
     TG_BELIEF_CHOICES = [(i / 10, f'{i / 10}$') for i in range(0, tg_full * 10, 1)]
     MAX_CQ_ATTEMPTS = 4
-    ERR_MSG = 'Пожалуйста перечитайте инструкции и попробуйте еще раз!'
+    ERR_MSG = 'Пожалуйста, перечитайте инструкции и попробуйте еще раз!'
     formatter = lambda x: 'раз' if x in [0] or x > 5 else 'раза'
     MAX_CQ_ATTEMPTS_formatted = f'{MAX_CQ_ATTEMPTS} {formatter(MAX_CQ_ATTEMPTS)}'
     expected_time = '20  минут'
@@ -83,9 +84,9 @@ class Constants(BaseConstants):
                        (3, f'{cg_belief_bonus * 3}'),
                        ]
     cq_tg_choices = [(0, '0$'),
-                     (1, '100 центов (1.0$)'),
-                     (2, '150 центов (1.5$)'),
-                     (3, '300 центов (3.0$)'),
+                     (1, '100 центов (1,00$)'),
+                     (2, '150 центов (1,50$)'),
+                     (3, '300 центов (3,00$)'),
                      ]
 
     correct_cg_answers = dict(
@@ -101,9 +102,9 @@ class Constants(BaseConstants):
         cq_tg_2=0,
         cq_tg_3=1,
     )
-    with open(r'./data/regions.yaml') as file:
+    with open(r'./data/regions.yaml',encoding='utf-8') as file:
         regions = yaml.load(file, Loader=yaml.FullLoader)
-    with open(r'./data/params.yaml') as file:
+    with open(r'./data/params.yaml',encoding='utf-8') as file:
         params = yaml.load(file, Loader=yaml.FullLoader)
         for i, j in enumerate(params):
             params[i]['description'] = markdown(j.get('description'))
@@ -211,7 +212,7 @@ class Player(BasePlayer):
         label='Если 70 человек из 100, принимающих участие в исследовании, назвали "Орел",  а ваша оценка была 55, какой дополнительный бонус за эту оценку вы получите?',
         choices=Constants.cqbeliefchoices, widget=widgets.RadioSelect)
     cq_cg_belief_1 = models.IntegerField(
-        label='Если вы верно (+/-10 единиц) угадаете сколько людей назовут "Орел" в каждом из трех регионов, какой будет ваш суммарный дополнительный бонус за эти вопросы?',
+        label='Если вы верно (+/-10 единиц) угадаете, сколько людей назовут "Орел" в каждом из трех регионов, какой будет ваш суммарный дополнительный бонус за эти вопросы?',
         choices=Constants.cqbeliefchoices, widget=widgets.RadioSelect)
     cq_cg_belief_2 = models.IntegerField(
         label='Если в регионе X 50 из 100 человек, принимающих участие в исследовании, назвали "Орел",  а ваша оценка про этот регион была 60, какой дополнительный бонус за эту оценку вы получите?',
@@ -220,7 +221,7 @@ class Player(BasePlayer):
         label='Если в регионе X 70 из 100 человек, принимающих участие в исследовании, назвали "Орел",  а ваша оценка про этот регион была 55, какой дополнительный бонус за эту оценку вы получите?',
         choices=Constants.cqbeliefchoices, widget=widgets.RadioSelect)
     cq_cg_belief_4 = models.IntegerField(
-        label='Допустим,  вы верно (+/-10 единиц) угадали сколько людей назовут "Орел" в 2 из 3 регионов, а в третьем регионе ваша оценка отличается больше чем на 10 единиц. Какой будет ваш суммарный дополнительный бонус за эти вопросы?',
+        label='Допустим,  вы верно (+/-10 единиц) угадали, сколько людей назовут "Орел" в 2 из 3 регионов, а в третьем регионе ваша оценка отличается больше, чем на 10 единиц. Какой будет ваш суммарный дополнительный бонус за эти вопросы?',
         choices=Constants.cqbeliefchoices, widget=widgets.RadioSelect)
     tg_err_counter = models.IntegerField(initial=0)
     cq_tg_1 = models.IntegerField(
