@@ -2,6 +2,7 @@ from otree.api import Currency as c, currency_range
 from ._builtin import Page as oTreePage, WaitPage
 from .models import Constants, Info
 import logging
+from django.utils import timezone
 
 logger = logging.getLogger(__name__)
 from django_user_agents.utils import get_user_agent
@@ -42,6 +43,9 @@ class Consent(FirstPage):
         self.player.useragent_os_family = user_agent.os.family
         self.player.useragent_device_family = user_agent.device.family
         return super().get()
+
+    def before_next_page(self):
+        self.participant.vars['study_start_time'] = timezone.now()
 
 
 class GeneralRules(FirstPage):
@@ -90,6 +94,9 @@ class CGdecision(AppPage):
 class CGBeliefsInstructions(AppPage):
     app = 'cg'
 
+    def before_next_page(self):
+        self.participant.vars['cg_belief_start_time'] = timezone.now()
+
 
 class CGBeliefsquiz(AppPage):
     app = 'cg'
@@ -119,6 +126,11 @@ class CGBeliefsquiz(AppPage):
 
         return super().form_invalid(form)
 
+    def before_next_page(self):
+        cg_belief_start_time = self.participant.vars['cg_belief_start_time']
+        self.player.time_on_cg_belief_quiz = (timezone.now() - cg_belief_start_time).total_seconds()
+        self.participant.vars['cg_belief_decision_start_time'] = timezone.now()
+
 
 class CGBeliefDecision(AppPage):
     app = 'cg'
@@ -146,6 +158,10 @@ class CGBeliefDecision(AppPage):
 
         return dict(data_to_show=zip(self.player.get_regional_data(), fdata))
 
+    def before_next_page(self):
+        cg_belief_decision_start_time = self.participant.vars['cg_belief_decision_start_time']
+        self.player.time_on_cg_belief_decision = (timezone.now() - cg_belief_decision_start_time).total_seconds()
+
 
 class Part1Announcement(Page):
     def is_displayed(self):
@@ -159,6 +175,9 @@ class Part2Announcement(Page):
 
 class TGInstructions(AppPage):
     app = 'tg'
+
+    def before_next_page(self):
+        self.participant.vars['tg_quiz_start_time'] = timezone.now()
 
 
 class TGQuiz(AppPage):
@@ -188,9 +207,16 @@ class TGQuiz(AppPage):
 
         return super().form_invalid(form)
 
+    def before_next_page(self):
+        tg_quiz_start_time = self.participant.vars['tg_quiz_start_time']
+        self.player.time_on_tg_quiz = (timezone.now() - tg_quiz_start_time).total_seconds()
+
 
 class TGRoleAnnouncement(AppPage):
     app = 'tg'
+
+    def before_next_page(self):
+        self.participant.vars['tg_decision_start_time'] = timezone.now()
 
 
 class TGReturnDecision(AppPage):
@@ -225,6 +251,10 @@ class TGDecision(AppPage):
 
         return dict(data_to_show=zip(self.player.get_regional_data(), fdata))
 
+    def before_next_page(self):
+        tg_decision_start_time = self.participant.vars['tg_decision_start_time']
+        self.player.time_on_tg_decision = (timezone.now() - tg_decision_start_time).total_seconds()
+
 
 class Blocked(Page):
     def is_displayed(self):
@@ -240,12 +270,11 @@ page_sequence = [
     CGdecision,
     CGBeliefsInstructions,
     CGBeliefsquiz,
-    RegionalInfoChoose,
-    CGBeliefDecision,
-
     TGInstructions,
     TGQuiz,
     TGRoleAnnouncement,
+    RegionalInfoChoose,
+    CGBeliefDecision,
     TGDecision,
     TGReturnDecision,
     Blocked

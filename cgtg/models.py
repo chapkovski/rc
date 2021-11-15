@@ -55,7 +55,6 @@ def gen_info(player):
     return dict(regions=region_names, infos=res, params=params)
 
 
-
 class Constants(BaseConstants):
     name_in_url = 'cgtg'
     players_per_group = None
@@ -102,9 +101,9 @@ class Constants(BaseConstants):
         cq_tg_2=0,
         cq_tg_3=1,
     )
-    with open(r'./data/regions.yaml',encoding='utf-8') as file:
+    with open(r'./data/regions.yaml', encoding='utf-8') as file:
         regions = yaml.load(file, Loader=yaml.FullLoader)
-    with open(r'./data/params.yaml',encoding='utf-8') as file:
+    with open(r'./data/params.yaml', encoding='utf-8') as file:
         params = yaml.load(file, Loader=yaml.FullLoader)
         for i, j in enumerate(params):
             params[i]['description'] = markdown(j.get('description'))
@@ -225,11 +224,11 @@ class Player(BasePlayer):
         choices=Constants.cqbeliefchoices, widget=widgets.RadioSelect)
     tg_err_counter = models.IntegerField(initial=0)
     cq_tg_1 = models.IntegerField(
-        label='Если участник А пошлет всю начальную сумму (100 центов) участнику Б, и он из умноженной на 3 суммы (300 центов) пошлет назад 150 центов, какой будет бонус участника А?',
+        label='Если участник А пошлет всю начальную сумму (100 центов) участнику Б, а тот из умноженной на 3 суммы (300 центов) пошлет назад 150 центов, какой будет бонус участника А?',
         choices=Constants.cq_tg_choices, widget=widgets.RadioSelect
     )
     cq_tg_2 = models.IntegerField(
-        label='Если участник А пошлет всю начальную сумму (100 центов) участнику Б, и он из умноженной на 3 суммы (300 центов) ничего не пошлет назад, какой будет бонус участника А?',
+        label='Если участник А пошлет всю начальную сумму (100 центов) участнику Б, а тот из умноженной на 3 суммы (300 центов) ничего не пошлет назад, какой будет бонус участника А?',
         choices=Constants.cq_tg_choices, widget=widgets.RadioSelect
     )
     cq_tg_3 = models.IntegerField(
@@ -243,6 +242,12 @@ class Player(BasePlayer):
     useragent_os_family = models.StringField()
     useragent_device_family = models.StringField()
     # user agent block END
+    # time trackers
+    time_on_cg_belief_decision = models.FloatField()
+    time_on_cg_belief_quiz = models.FloatField()
+    time_on_tg_decision = models.FloatField()
+    time_on_tg_quiz = models.FloatField()
+    # time trackers END
     def cq_cg_belief_solo_1_error_message(self, value):
         if value != Constants.correct_cg_answers['cq_cg_belief_solo_1']:
             return Constants.ERR_MSG

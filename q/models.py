@@ -32,6 +32,16 @@ class Group(BaseGroup):
 
 
 class Player(BasePlayer):
+    # some technical stuff
+    dump_session_vars = models.LongStringField()
+    dump_session_config = models.LongStringField()
+    dump_participant_vars = models.LongStringField()
+    payable = models.BooleanField()
+    # time trackers block
+    time_on_study = models.FloatField()
+    time_on_survey = models.FloatField()
+    time_total = models.FloatField()
+    # time trackers block END
     # knowledge block
     knowledge_arkhangelsk_live_in = models.BooleanField()
     knowledge_arkhangelsk_family = models.BooleanField()

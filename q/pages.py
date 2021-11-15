@@ -2,6 +2,20 @@ from otree.api import Currency as c, currency_range
 from ._builtin import Page as oTreePage, WaitPage
 from .models import Constants
 import json
+import logging
+from django.utils import timezone
+from otree.currency import Currency, RealWorldCurrency
+from datetime import datetime, date
+class MyEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, (Currency, RealWorldCurrency)):
+            if obj.get_num_decimal_places() == 0:
+                return int(obj)
+            return float(obj)
+        if isinstance(obj, (datetime, date)):
+            return obj.isoformat()
+
+        return json.JSONEncoder.default(self, obj)
 
 
 class Page(oTreePage):
@@ -20,6 +34,13 @@ class Page(oTreePage):
 
 
 class Demand(Page):
+    def get(self):
+        self.participant.vars.setdefault('survey_start_time', timezone.now())
+        if self.player.time_on_study is None:
+            study_start_time = self.participant.vars.get('study_start_time', timezone.now())
+            self.player.time_on_study = (timezone.now() - study_start_time).total_seconds()
+        return super().get()
+
     form_model = 'player'
     form_fields = ["demand", 'instructions_clarity']
 
@@ -89,8 +110,17 @@ class Demographics(Page):
     ]
 
     def before_next_page(self):
+        self.player.dump_session_vars = json.dumps(self.session.vars, cls=MyEncoder)
+        self.player.dump_session_config = json.dumps(self.session.config, cls=MyEncoder)
+        pvars = self.participant.vars.copy()
+        pvars.pop('params')
+        self.player.dump_participant_vars = json.dumps(pvars, cls=MyEncoder)
         self.player.payable = True
         self.participant.vars['payable_status'] = True
+        total_start_time = self.participant.vars.get('study_start_time', timezone.now())
+        survey_start_time = self.participant.vars['survey_start_time']
+        self.player.time_total = (timezone.now() - total_start_time).total_seconds()
+        self.player.time_on_survey = (timezone.now() - survey_start_time).total_seconds()
 
 
 class FinalForToloka(Page):
