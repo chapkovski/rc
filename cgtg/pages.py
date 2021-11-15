@@ -243,7 +243,7 @@ class TGDecision(AppPage):
         comment = f'(Каждый цент, посланный вами участнику Б, будет умножен на {Constants.tg_coef} и любую часть полученной суммы он может послать вам назад)'
         for i, f in enumerate(form, start=1):
             regname = getattr(self.player, f'r{i}_name')
-            label = f'Сколько центов из 100 вы пошлете участнику Б, если он окажется из региона: {regname}?'
+            label = f'Сколько центов из 100 вы пошлете участнику Б, если он окажется из региона: <i><u>{regname}</u></i>?'
             t = {'field': f,
                  'label': label,
                  'comment': comment}
