@@ -4,3 +4,4 @@ pandas
 pyyaml
 Markdown
 MarkupSafe
+django_user_agents
