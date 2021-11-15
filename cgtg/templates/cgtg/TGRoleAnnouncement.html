@@ -8,20 +8,7 @@
 {% block content %}
 
 
-    <div class="card my-3">
-        <div class="card-body">
-            <div class="card-text">
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item lead text-center">
-
-                        <p><b>Вам досталась роль Участника {{ player.role }}.</b>
-
-                    </li>
-                </ul>
-
-            </div>
-        </div>
-    </div>
+       {% include 'cgtg/includes/role_alert.html' %}
     {% next_button %}
 {% endblock %}
 

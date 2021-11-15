@@ -127,6 +127,7 @@ class CGBeliefsquiz(AppPage):
         return super().form_invalid(form)
 
     def before_next_page(self):
+
         cg_belief_start_time = self.participant.vars['cg_belief_start_time']
         self.player.time_on_cg_belief_quiz = (timezone.now() - cg_belief_start_time).total_seconds()
         self.participant.vars['cg_belief_decision_start_time'] = timezone.now()
@@ -150,7 +151,7 @@ class CGBeliefDecision(AppPage):
         comment = f'(За каждый ответ, отличающийся от истинного не более чем на 10 единиц, ваш бонус увеличивается на {self.subsession.get_cg_belief_bonus()}.)'
         for i, f in enumerate(form, start=1):
             regname = getattr(self.player, f'r{i}_name')
-            label = f'Из 100 участников из региона <i>{regname}</i> сколько назовут "Орел"?'
+            label = f'Из 100 участников из региона <i><u>{regname}</u></i> сколько назовут "Орел"?'
             t = {'field': f,
                  'label': label,
                  'comment': comment}
@@ -159,6 +160,12 @@ class CGBeliefDecision(AppPage):
         return dict(data_to_show=zip(self.player.get_regional_data(), fdata))
 
     def before_next_page(self):
+        res = {}
+        for i, j in enumerate(self.player.get_regions(), start=1):
+            rname = Constants.reg_correspondence[j]
+            res[rname] = getattr(self.player, f'r{i}_cg_estimate')
+            
+        self.participant.vars['region_cg_beliefs'] = res
         cg_belief_decision_start_time = self.participant.vars['cg_belief_decision_start_time']
         self.player.time_on_cg_belief_decision = (timezone.now() - cg_belief_decision_start_time).total_seconds()
 
@@ -252,6 +259,11 @@ class TGDecision(AppPage):
         return dict(data_to_show=zip(self.player.get_regional_data(), fdata))
 
     def before_next_page(self):
+        res = {}
+        for i, j in enumerate(self.player.get_regions(), start=1):
+            rname = Constants.reg_correspondence[j]
+            res[rname] = getattr(self.player, f'r{i}_trust')
+        self.participant.vars['region_tg_decisions'] = res
         tg_decision_start_time = self.participant.vars['tg_decision_start_time']
         self.player.time_on_tg_decision = (timezone.now() - tg_decision_start_time).total_seconds()
 

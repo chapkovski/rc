@@ -6,6 +6,8 @@ import logging
 from django.utils import timezone
 from otree.currency import Currency, RealWorldCurrency
 from datetime import datetime, date
+
+
 class MyEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, (Currency, RealWorldCurrency)):
@@ -43,6 +45,14 @@ class Demand(Page):
 
     form_model = 'player'
     form_fields = ["demand", 'instructions_clarity']
+
+    def before_next_page(self):
+        if self.participant.vars.get('region_cg_beliefs'):
+            for k, v in self.participant.vars.get('region_cg_beliefs').items():
+                setattr(self.player, f'{k}_cg_belief', v)
+        if self.participant.vars.get('region_tg_decisions'):
+            for k, v in self.participant.vars.get('region_tg_decisions').items():
+                setattr(self.player, f'{k}_tg_decision', v)
 
 
 class Risk(Page):

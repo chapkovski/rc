@@ -32,6 +32,14 @@ class Group(BaseGroup):
 
 
 class Player(BasePlayer):
+    # projection of cgtg into one data
+    arkh_cg_belief = models.IntegerField()
+    msk_cg_belief = models.IntegerField()
+    voronezh_cg_belief = models.IntegerField()
+    arkh_tg_decision = models.IntegerField()
+    msk_tg_decision = models.IntegerField()
+    voronezh_tg_decision = models.IntegerField()
+
     # some technical stuff
     dump_session_vars = models.LongStringField()
     dump_session_config = models.LongStringField()
@@ -90,11 +98,11 @@ class Player(BasePlayer):
         label="Какой самый высокий уровень школы вы закончили или какую высшую степень вы получили?",
         choices=choices.EDUCATION_CHOICES, widget=widgets.RadioSelect)
     gender = models.IntegerField(label='Укажите ваш пол:',
-                                choices=choices.GENDER_CHOICES, widget=widgets.RadioSelect)
+                                 choices=choices.GENDER_CHOICES, widget=widgets.RadioSelect)
     marital = models.IntegerField(label='В настоящий момент вы:',
-                                 choices=choices.MARITAL_CHOICES, widget=widgets.RadioSelect)
+                                  choices=choices.MARITAL_CHOICES, widget=widgets.RadioSelect)
     employment = models.IntegerField(label='В настоящий момент вы:',
-                                    choices=choices.EMPLOYMENT_CHOICES, widget=widgets.RadioSelect)
+                                     choices=choices.EMPLOYMENT_CHOICES, widget=widgets.RadioSelect)
     income = models.IntegerField(
         label="Какое высказывание наиболее точно описывает финансовое положение вашей семьи?",
         choices=choices.INCOME_CHOICES,

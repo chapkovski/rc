@@ -87,7 +87,11 @@ class Constants(BaseConstants):
                      (2, '150 центов (1,50$)'),
                      (3, '300 центов (3,00$)'),
                      ]
-
+    reg_correspondence = {
+        'Архангельская область': 'arkh',
+        'Москва': 'msk',
+        'Воронежская область': 'voronezh'
+    }
     correct_cg_answers = dict(
         cq_cg_belief_1=3,
         cq_cg_belief_2=1,
