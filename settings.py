@@ -2,7 +2,7 @@ from os import environ
 
 SESSION_CONFIGS = [
     dict(
-        debug=False,
+
         name='fic',
         display_name='Fixed Information + Corruption',
         app_sequence=[
@@ -49,7 +49,9 @@ SESSION_CONFIGS = [
 
 SESSION_CONFIG_DEFAULTS = dict(
     real_world_currency_per_point=1.00, participation_fee=0.00, doc="",
-    for_toloka=True
+    for_toloka=True,
+    debug=False,
+    randomizing_apps=True,
 )
 
 # ISO-639 code

@@ -131,7 +131,10 @@ class Subsession(BaseSubsession):
                 if self.treatment == 'return':
                     p.vars['appseq'] = Constants.apps.copy()
                 else:
-                    p.vars['appseq'] = next(apps)
+                    if self.session.config.get('randomizing_apps', True):
+                        p.vars['appseq'] = next(apps)
+                    else:
+                        p.vars['appseq'] = Constants.apps.copy()
         infos = []
         for p in self.get_players():
             p.payable_round = p.round_number == p.participant.vars.get('payable_round')
@@ -181,7 +184,6 @@ class Player(BasePlayer):
     def info_descriptions(self):
         r1 = self.infos.filter(to_show=True).order_by('region_position').first().region
         infos = self.infos.filter(to_show=True, region=r1).order_by('info_position')
-
         return infos
 
     r1_name = models.StringField()
@@ -247,6 +249,7 @@ class Player(BasePlayer):
     time_on_cg_belief_quiz = models.FloatField()
     time_on_tg_decision = models.FloatField()
     time_on_tg_quiz = models.FloatField()
+
     # time trackers END
     def cq_cg_belief_solo_1_error_message(self, value):
         if value != Constants.correct_cg_answers['cq_cg_belief_solo_1']:

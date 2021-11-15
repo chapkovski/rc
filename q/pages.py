@@ -113,6 +113,7 @@ class Demographics(Page):
         self.player.dump_session_vars = json.dumps(self.session.vars, cls=MyEncoder)
         self.player.dump_session_config = json.dumps(self.session.config, cls=MyEncoder)
         pvars = self.participant.vars.copy()
+        pvars.pop('regions')
         pvars.pop('params')
         self.player.dump_participant_vars = json.dumps(pvars, cls=MyEncoder)
         self.player.payable = True

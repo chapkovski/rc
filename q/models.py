@@ -85,17 +85,17 @@ class Player(BasePlayer):
           Ниже представлена 7-балльная шкала, на которой политические взгляды, которых могут придерживаться люди, расположены от крайне либеральных (слева) до крайне консервативных (справа). Куда бы вы поставили себя на этой шкале?
           """, choices=range(0, 8), widget=widgets.RadioSelectHorizontal)
     # DEMOGRAPHICS
-    age = models.StringField(label='Укажите ваш возраст:', choices=choices.AGE_CHOICES, widget=widgets.RadioSelect)
-    education = models.StringField(
+    age = models.IntegerField(label='Укажите ваш возраст:', choices=choices.AGE_CHOICES, widget=widgets.RadioSelect)
+    education = models.IntegerField(
         label="Какой самый высокий уровень школы вы закончили или какую высшую степень вы получили?",
         choices=choices.EDUCATION_CHOICES, widget=widgets.RadioSelect)
-    gender = models.StringField(label='Укажите ваш пол:',
+    gender = models.IntegerField(label='Укажите ваш пол:',
                                 choices=choices.GENDER_CHOICES, widget=widgets.RadioSelect)
-    marital = models.StringField(label='В настоящий момент вы:',
+    marital = models.IntegerField(label='В настоящий момент вы:',
                                  choices=choices.MARITAL_CHOICES, widget=widgets.RadioSelect)
-    employment = models.StringField(label='В настоящий момент вы:',
+    employment = models.IntegerField(label='В настоящий момент вы:',
                                     choices=choices.EMPLOYMENT_CHOICES, widget=widgets.RadioSelect)
-    income = models.StringField(
+    income = models.IntegerField(
         label="Какое высказывание наиболее точно описывает финансовое положение вашей семьи?",
         choices=choices.INCOME_CHOICES,
         widget=widgets.RadioSelect()
