@@ -66,8 +66,10 @@
         slider2.noUiSlider.set(0);
         if (curValue === 0) {
             slider2.setAttribute('disabled', true);
+            $("#slider2").attr("disabled", true);
         } else {
             slider2.setAttribute('disabled', false);
+            $("#slider2").attr("disabled", false);
         }
         slider2.noUiSlider.updateOptions({
 
