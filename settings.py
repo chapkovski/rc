@@ -52,6 +52,7 @@ SESSION_CONFIG_DEFAULTS = dict(
     for_toloka=True,
     debug=False,
     randomizing_apps=True,
+    cq_check=True,
 )
 
 # ISO-639 code

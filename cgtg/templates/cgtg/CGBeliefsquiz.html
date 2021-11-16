@@ -6,7 +6,7 @@
 {% endblock %}
 {% block content %}
 
-   {% include 'cgtg/includes/cg_belief_instructions_toggler.html' %}
+    {% include 'cgtg/includes/cg_belief_instructions_toggler.html' %}
 
 
 
@@ -14,7 +14,10 @@
         Следующие вопросы нужны для проверки понимания вами инструкции. Вы сможете продолжить после того, как
         представите правильные ответы на эти вопросы.
         <div class="fw-bold">Вы можете всегда перечитать инструкцию, нажав кнопку "Инструкции".</div>
-        <div class="lead fw-bold text-center text-danger">Количество оставшихся попыток: {{ attempts }} </div>
+        {% if session.config.cq_check %}
+
+            <div class="lead fw-bold text-center text-danger">Количество оставшихся попыток: {{ attempts }} </div>
+        {% endif %}
     </div>
     {% formfields %}
 

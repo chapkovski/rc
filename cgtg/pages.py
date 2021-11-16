@@ -50,8 +50,12 @@ class Consent(FirstPage):
 
 class GeneralRules(FirstPage):
     form_model = 'player'
-    form_fields = ['confirm_time', 'confirm_block']
-
+    def get_form_fields(self):
+        if self.session.config.get('cq_check'):
+            form_fields = ['confirm_time', 'confirm_block']
+        else:
+            form_fields = ['confirm_time',]
+        return form_fields
 
 class RegionalInfoChoose(FirstPage):
 
@@ -118,11 +122,12 @@ class CGBeliefsquiz(AppPage):
 
     def form_invalid(self, form):
         self.player.cq_cg_err_counter += 1
-        if self.player.cq_cg_err_counter > Constants.MAX_CQ_ATTEMPTS:
-            self.player.blocked = True
-            self.participant.vars['blocked'] = True
-            self._increment_index_in_pages()
-            return self._redirect_to_page_the_user_should_be_on()
+        if self.session.config.get('cq_check'):
+            if self.player.cq_cg_err_counter > Constants.MAX_CQ_ATTEMPTS:
+                self.player.blocked = True
+                self.participant.vars['blocked'] = True
+                self._increment_index_in_pages()
+                return self._redirect_to_page_the_user_should_be_on()
 
         return super().form_invalid(form)
 
@@ -206,11 +211,12 @@ class TGQuiz(AppPage):
 
     def form_invalid(self, form):
         self.player.tg_err_counter += 1
-        if self.player.tg_err_counter > Constants.MAX_CQ_ATTEMPTS:
-            self.player.blocked = True
-            self.participant.vars['blocked'] = True
-            self._increment_index_in_pages()
-            return self._redirect_to_page_the_user_should_be_on()
+        if self.session.config.get('cq_check'):
+            if self.player.tg_err_counter > Constants.MAX_CQ_ATTEMPTS:
+                self.player.blocked = True
+                self.participant.vars['blocked'] = True
+                self._increment_index_in_pages()
+                return self._redirect_to_page_the_user_should_be_on()
 
         return super().form_invalid(form)
 
